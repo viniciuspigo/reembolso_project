@@ -1,0 +1,252 @@
+header {
+  width: 100%;
+}
+
+.header-content {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 38px 90px 0px 90px;
+
+  & .welcome {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    & p {
+      font-size: 14px;
+      font-weight: 500;
+      text-align: center;
+    }
+
+    & button {
+      display: flex;
+      background-color: transparent;
+      border: none;
+      margin-left: 10px;
+      cursor: pointer;
+    }
+  }
+}
+
+.container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 26px;
+
+  & .refund-request {
+    width: 512px;
+    background-color: var(--color-gray-500);
+    padding: 40px;
+    border-radius: 16px;
+
+    & .content {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 40px;
+
+      & h1 {
+        color: var(--color-gray-100);
+        font-size: 20px;
+        font-weight: 700;
+      }
+
+      & p {
+        color: var(--color-gray-200);
+        font-size: 14px;
+        font-weight: 400;
+      }
+    }
+
+    & #user-form-inputs {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+
+      & .labelInput {
+        display: flex;
+        flex-direction: column;
+
+        & label {
+          color: var(--color-gray-200);
+          font-size: 10px;
+          font-weight: 400;
+          padding-bottom: 8px;
+        }
+
+        & input,
+        select {
+          height: 48px;
+          padding-left: 16px;
+          border: 1px solid var(--color-gray-300);
+          border-radius: 8px;
+          color: var(--color-gray-200);
+          font-size: 14px;
+          outline: none;
+          transition: 0.5s;
+        }
+
+        & input:focus {
+          border: 1px solid var(--color-green-100);
+        }
+
+        & input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+          -webkit-appearance: none;
+          margin: 0;
+        }
+
+        & select {
+          appearance: none;
+          -webkit-appearance: none;
+          -moz-appearance: none;
+
+          padding: 0 16px;
+          background-image: url(../assets/images/seta_baixo.svg);
+          background-repeat: no-repeat;
+          background-position: right 16px center;
+          cursor: pointer;
+          transition: background-image 0.5s ease-in-out;
+        }
+
+        & select:hover,
+        select:focus {
+          border-color: var(--color-green-100);
+          outline: none;
+        }
+
+        & select:focus {
+          background-image: url(../assets/images/seta_cima.svg);
+        }
+
+        & .message {
+          margin-top: 4px;
+          display: none;
+          font-size: 10px;
+          color: red;
+        }
+      }
+
+      & .categoriaValor {
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+        gap: 16px;
+
+        & .categoria,
+        .valor {
+          display: flex;
+          flex-direction: column;
+        }
+
+        & .categoria {
+          width: 262px;
+        }
+
+        & .valor {
+          width: 164px;
+        }
+      }
+
+      & .uploadContainer {
+        & .custom-file-input {
+          height: 48px;
+          display: flex;
+          align-items: center;
+          border: 1px solid var(--color-gray-300);
+          border-radius: 4px;
+          overflow: hidden;
+          background-color: #fff;
+
+          & .file-name {
+            flex: 1;
+            padding: 10px;
+            font-size: 14px;
+            color: var(--color-gray-200);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+          }
+
+          & .upload-button {
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          }
+        }
+      }
+
+      & .btnSubmit {
+        width: 100%;
+
+        & button {
+          width: 100%;
+          background-color: var(--color-green-100);
+          color: var(--color-white);
+          border-radius: 8px;
+          border: none;
+          font-size: 14px;
+          font-weight: 700;
+          padding: 15px 20px;
+          cursor: pointer;
+          transition: 0.3s;
+        }
+
+        & button:hover {
+          background-color: var(--color-green-200);
+        }
+      }
+    }
+
+    & .confirmation-section {
+      display: none;
+      & .confirmation-box {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 24px;
+        margin-bottom: 40px;
+
+        & h2 {
+          color: var(--color-green-100);
+          font-size: 24px;
+          font-weight: 700;
+        }
+
+        & p {
+          color: var(--color-gray-200);
+          font-size: 14px;
+          font-weight: 400;
+          text-align: center;
+        }
+      }
+
+      & .confirmation-btn {
+        max-width: 100%;
+
+        & button {
+          width: 100%;
+          background-color: var(--color-green-100);
+          color: var(--color-white);
+          font-size: 14px;
+          font-weight: 700;
+          border: none;
+          border-radius: 8px;
+          padding: 15px 20px;
+          cursor: pointer;
+          transition: 0.3s;
+        }
+
+        & button:hover {
+          background-color: var(--color-green-200);
+        }
+      }
+    }
+  }
+}
