@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./styles/user_main.css" />
+    <script src="./js/user.js" defer></script>
+    <title>Tela de Reembolso</title>
+  </head>
+  <body>
+    <header>
+      <div class="header-content">
+        <div class="logo">
+          <img src="./assets/images/logo_user.svg" alt="" />
+        </div>
+        <div class="welcome">
+          <p>Olá, <span id="user-name">Usuário</span></p>
+          <button class="logout-btn">
+            <img
+              src="./assets/images/logout.svg"
+              alt="logout_icon"
+              id="logout"
+            />
+          </button>
+        </div>
+      </div>
+    </header>
+    <main>
+      <div class="container">
+        <div class="refund-request">
+          <form id="form">
+            <div class="content">
+              <h1>Solicitação de reembolso</h1>
+              <p>Dados da despesa para solicitar reembolso.</p>
+            </div> 
+            <div id="user-form-inputs">
+              <div class="labelInput nomeSolicitacao">
+                <label for="nomeSolicitacao">NOME DA SOLICITAÇÃO</label>
+                <input
+                  type="text"
+                  name="nomeSolicitacao"
+                  id="nomeSolicitacao"
+                  required
+                />
+              </div>
+              <div class="labelInput categoriaValor">
+                <div class="categoria">
+                  <label for="categoria">CATEGORIA</label>
+                  <select name="categoria" id="categoriaSelect">
+                    <option value="selecione" disabled selected>Selecione</option>
+                    <option value="Alimentação">Alimentação</option>
+                    <option value="Hospedagem">Hospedagem</option>
+                    <option value="Transporte">Transporte</option>
+                    <option value="Serviços">Serviços</option>
+                    <option value="Outros">Outros</option>
+                  </select>
+                </div>
+                <div class="valor">
+                  <label for="valor">VALOR</label>
+                  <input
+                    type="number"
+                    id="valorReembolso"
+                    placeholder="0,00"
+                    min="0"
+                    step="0.01"
+                    required
+                  />
+                </div>
+              </div>
+              <div class="labelInput uploadContainer">
+                <label for="comprovante">COMPROVANTE</label>
+                <div class="custom-file-input">
+                  <span class="file-name">Nome do arquivo.pdf</span>
+                  <button type="button" class="upload-button">
+                    <img src="./assets/images/upload.svg" alt="" />
+                  </button>
+                  <input
+                    type="file"
+                    id="comprovante"
+                    accept="application/pdf"
+                    hidden
+                  />
+                </div>
+                <span class="message"></span>
+              </div>
+              <div class="btnSubmit">
+                <button type="submit" id="send-btn">Enviar</button>
+              </div>
+            </div>
+          </form>
+          <div class="confirmation-section">
+            <div class="confirmation-box">
+              <h2>Solicitação enviada!</h2>
+              <div class="confirmation-icon">
+                <img src="./assets/images/confirmation.svg" alt="confirmacao" />
+              </div>
+              <p>
+                Agora é apenas aguardar! Sua solicitação será analisada e, em
+                breve, o setor financeiro irá entrar em contato com você.
+              </p>
+            </div>
+            <div class="confirmation-btn">
+              <button id="new-request-button">Nova solicitação</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </body>
+</html>

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./styles/login_styles.css" />
+    <title>Sistema de Reembolso</title>
+  </head>
+  <body>
+    <main>
+      <div class="container">
+        <form class="form-sign-up">
+          <div class="logo">
+            <img src="./assets/images/logo.svg" alt="refund_logo" />
+          </div>
+          <div class="sign-up">
+            <div class="input-sign-up name-sign-up">
+              <label for="fullname">NOME</label>
+              <input
+                type="text"
+                id="input-fullname"
+                name="fullname"
+                autocomplete="name"
+              />
+            </div>
+            <div class="input-sign-up email-sign-up">
+              <label for="email">E-MAIL</label>
+              <input
+                type="email"
+                id="input-email"
+                name="email"
+                autocomplete="email"
+              />
+            </div>
+            <div class="input-sign-up password-sign-up">
+              <label for="senha">SENHA</label>
+              <input
+                type="password"
+                id="input-password"
+                name="password"
+                autocomplete="new-password"
+              />
+            </div>
+            <div class="input-sign-up password-sign-up">
+              <label for="senha">CONFIRME A SENHA</label>
+              <input
+                type="password"
+                id="input-password-confirmation"
+                name="passwordConfirmation"
+                autocomplete="new-password"
+              />
+            </div>
+            <span class="message">teste</span>
+            <div class="form-button">
+              <button type="submit" id="button-sign-up">Cadastrar</button>
+            </div>
+          </div>
+          <div class="account-btn">
+            <a href="./sign-in.html"><button type="button">Já tenho uma conta</button></a>
+          </div>
+        </form>
+      </div>
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/js-sha256/0.9.0/sha256.min.js"></script>
+    <script src="./js/signup.js"></script>
+  </body>
+</html>
