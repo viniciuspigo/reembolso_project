@@ -62,7 +62,7 @@ header {
       }
     }
 
-    & #user-form {
+    & #user-form-inputs {
       display: flex;
       flex-direction: column;
       gap: 24px;

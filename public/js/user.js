@@ -10,8 +10,10 @@ function mostrarMensagem(texto, cor) {
 
 const content = document.querySelector(".content");
 const confirmationSection = document.querySelector(".confirmation-section");
-const userForm = document.querySelector("#user-form");
+const userInput = document.querySelector("#user-form-inputs");
+const form = document.querySelector("#form")
 const sendBtn = document.querySelector("#send-btn")
+
 
 document.addEventListener("DOMContentLoaded", () => {
   // Carrega o user logado
@@ -85,9 +87,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       // Oculta o form e altera para a "pagina" de confirmação
-      console.log("Simulando envio bem-sucedido...");
-      userForm.style.display = "none";
-      content.style.display = "none";
+      form.style.display = "none"
       confirmationSection.style.display = "block";
     } catch (error) {
       mostrarMensagem(error.message, "red");
@@ -95,14 +95,13 @@ document.addEventListener("DOMContentLoaded", () => {
   }
   
   // Evento do form
-  userForm.addEventListener("submit", envioForm);
+  form.addEventListener("submit", envioForm);
 
   // Botão nova solicitacao
   document.querySelector("#new-request-button").addEventListener("click", () => {
       // Oculta a tela de confirmação e exibe o formulário novamente
       confirmationSection.style.display = "none";
-      userForm.style.display = "flex";
-      content.style.display = "flex";
+      form.style.display = "block"
 
       fileNameSpan.textContent = "Nome do arquivo.pdf";
     });
