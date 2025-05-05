@@ -1,186 +1,324 @@
 header {
-    width: 100%;
-  }
-  
+  width: 100%;
+}
+
 .header-content {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 38px 90px 0px 90px;
+
+  & .welcome {
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
-    padding: 38px 90px 0px 90px;
-  
-    & .welcome {
+    align-items: center;
+
+    & p {
+      font-size: 14px;
+      font-weight: 500;
+      text-align: center;
+    }
+
+    & button {
       display: flex;
-      flex-direction: row;
-      align-items: center;
-  
-      & p {
-        font-size: 14px;
-        font-weight: 500;
-        text-align: center;
+      background-color: transparent;
+      border: none;
+      margin-left: 10px;
+      cursor: pointer;
+    }
+  }
+}
+
+.container {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 36px;
+
+  & .refund-panel {
+    display: flex;
+    flex-direction: column;
+    width: 1082px;
+    padding: 40px;
+    border-radius: 16px;
+    background-color: var(--color-gray-500);
+
+    & .refund-content {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+
+      & .refund-title h1 {
+        color: var(--color-gray-100);
+        font-size: 20px;
+        font-weight: 700;
       }
 
-      & button {
+      & .refund-filter {
         display: flex;
-        background-color: transparent;
-        border: none;
-        margin-left: 10px;
-        cursor: pointer;
+        flex-direction: row;
+        gap: 12px;
+        width: 100%;
+        padding-right: 12px;
+
+        & input {
+          padding: 15px 0px 15px 16px;
+          border: 1px solid var(--color-gray-300);
+          border-radius: 8px;
+          width: 100%;
+        }
+
+        & button {
+          background-color: var(--color-green-100);
+          padding: 12px;
+          width: 48px;
+          height: 48px;
+          border: none;
+          border-radius: 8px;
+          cursor: pointer;
+          transition: 0.3s;
+        }
+
+        & button:hover {
+          background-color: var(--color-green-200);
+        }
+      }
+
+      & hr {
+        border: 0.1px solid var(--color-gray-400);
+      }
+
+      & .refund-list {
+        width: 100%;
+
+        & .refund-order {
+          display: flex;
+          flex-direction: column;
+          gap: 16px;
+
+          & .order-item {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+
+            & .left-content {
+              display: flex;
+              flex-direction: row;
+              gap: 12px;
+
+              img {
+                color: var(--color-green-100);
+                background-color: var(--color-gray-400);
+                padding: 8px;
+                border-radius: 50%;
+                width: 34px;
+                height: auto;
+              }
+
+              & .text-content {
+                & h2 {
+                  color: var(--color-gray-100);
+                  font-size: 14px;
+                  font-weight: 700;
+                }
+
+                & p {
+                  color: var(--color-gray-200);
+                  font-size: 12px;
+                  font-weight: 400;
+                }
+              }
+            }
+
+            & .right-content {
+              display: flex;
+              flex-direction: row;
+
+              & span {
+                color: var(--color-gray-200);
+                font-size: 12px;
+                font-weight: 400;
+                margin-right: 5px;
+              }
+
+              & p {
+                color: var(--color-gray-100);
+                font-size: 14px;
+                font-weight: 600;
+              }
+            }
+          }
+
+          & .order-item:hover {
+            background-color: #f5f5f5; /* Fundo cinza claro */
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Sombra suave */
+          }
+        }
+      }
+
+        & .pagination-controls {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+
+        & button {
+          display: flex;
+          background-color: var(--color-green-100);
+          border: none;
+          border-radius: 8px;
+          cursor: pointer;
+          padding: 3px;
+          transition: 0.3s;
+
+          & img {
+            width: 24px;
+            height: 24px;
+          }
+        }
+
+        & button:hover {
+          background-color: var(--color-green-200);
+        }
+
+        & span {
+          color: var(--color-gray-200);
+          font-size: 14px;
+          font-weight: 400;
+        }
+      }
+    }
+
+    & .refund-item-information {
+      display: none;
+      flex-direction: column;
+
+      & .refund-title {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        margin-bottom: 40px;
+
+        & h2 {
+          color: var(--color-gray-100);
+          font-size: 20px;
+          font-weight: 700;
+        }
+
+        & p {
+          color: var(--color-gray-200);
+          font-size: 14px;
+          font-weight: 400;
+        }
+      }
+
+      & .refund-main-information {
+        display: flex;
+        flex-direction: column;
+        gap: 32px;
+        margin-bottom: 32px;
+
+        & .labelInput {
+            display: flex;
+            flex-direction: column;
+    
+            & label {
+              color: var(--color-gray-200);
+              font-size: 10px;
+              font-weight: 400;
+              margin-bottom: 8px;
+            }
+    
+            & input {
+              height: 48px;
+              padding-left: 16px;
+              border: 1px solid var(--color-gray-300);
+              border-radius: 8px;
+              color: var(--color-gray-200);
+              font-size: 14px;
+              outline: none;
+              transition: 0.5s;
+            }
+    
+            & input:focus {
+              border: 1px solid var(--color-green-100);
+            }
+          }
+
+        & .categoriaValor {
+            display: flex;
+            flex-direction: row;
+            width: 100%;
+            gap: 16px;
+    
+            & .categoria,
+            .valor {
+              display: flex;
+              flex-direction: column;
+            }
+    
+            & .categoria {
+              width: 262px;
+            }
+    
+            & .valor {
+              width: 164px;
+            }
+          }
+
+        & .open-comprovante {
+          max-width: 100%;
+          display: flex;
+          justify-content: center;
+
+          & button {
+            color: var(--color-green-100);
+            font-size: 14px;
+            font-weight: 600;
+            background-color: transparent;
+            display: flex;
+            align-items: center;
+            border: none;
+            gap: 6px;
+            cursor: pointer;
+            transition: 1s;
+          }
+
+          & button:hover {
+            text-decoration: underline;
+          }
+        }
+      }
+
+      & .return-btn {
+        max-width: 100%;
+        display: flex;
+        justify-content: center;
+
+        & button {
+            width: 100%;
+            background-color: var(--color-green-100);
+            color: var(--color-white);
+            font-size: 14px;
+            font-weight: 700;
+            border: none;
+            border-radius: 8px;
+            padding: 15px 20px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        & button:hover {
+            background-color: var(--color-green-200);
+        }
       }
     }
   }
-
-.container {
-    width: 100%;
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding-top: 36px;
-
-    & .refund-panel {
-        display: flex;
-        flex-direction: column;
-        gap: 24px;
-        width: 1082px;
-        padding: 40px;
-        border-radius: 16px;
-        background-color: var(--color-gray-500);
-
-        & .refund-title h1 {
-            color: var(--color-gray-100);
-            font-size: 20px;
-            font-weight: 700;
-        }
-
-        & .refund-filter {
-            display: flex;
-            flex-direction: row;
-            gap: 12px;
-            width: 100%;
-            padding-right: 12px;
-
-            & input {
-                padding: 15px 0px 15px 16px;
-                border: 1px solid var(--color-gray-300);
-                border-radius: 8px;
-                width: 100%;
-            }
-
-            & button {
-                background-color: var(--color-green-100);
-                padding: 12px;
-                width: 48px;
-                height: 48px;
-                border: none;
-                border-radius: 8px;
-                cursor: pointer;
-                transition: 0.3s;
-            }
-
-            & button:hover {
-                background-color: var(--color-green-200);
-            }
-        }
-
-        & hr {
-            border: 0.1px solid var(--color-gray-400);
-        }
-
-        & .refund-list {
-            width: 100%;
-
-            & .refund-order {
-                display: flex;
-                flex-direction: column;
-                gap: 16px;
-
-                & .order-item {
-                    display: flex;
-                    flex-direction: row;
-                    justify-content: space-between;
-                    align-items: center;
-
-                    & .left-content {
-                        display: flex;
-                        flex-direction: row;
-                        gap: 12px;
-
-                        img {
-                            color: var(--color-green-100);
-                            background-color: var(--color-gray-400);
-                            padding: 8px;
-                            border-radius: 50%;
-                            width: 34px;
-                            height: auto;
-                        }
-
-                        & .text-content {
-                            & h2 {
-                                color: var(--color-gray-100);
-                                font-size: 14px;
-                                font-weight: 700;
-                            }
-                            
-                            & p {
-                                color: var(--color-gray-200);
-                                font-size: 12px;
-                                font-weight: 400;
-                            }
-                        }
-                    }
-
-                    & .right-content {
-                        display: flex;
-                        flex-direction: row;
-
-                        & span {
-                            color: var(--color-gray-200);
-                            font-size: 12px;
-                            font-weight: 400;
-                            margin-right: 5px;
-                        }
-
-                        & p {
-                            color: var(--color-gray-100);
-                            font-size: 14px;
-                            font-weight: 600;
-                        }
-                    }
-                }
-            }
-        }
-
-        & .pagination-controls {
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-
-            & button {
-                display: flex;
-                background-color: var(--color-green-100);
-                border: none;
-                border-radius: 8px;
-                cursor: pointer;
-                padding: 3px;
-                transition: 0.3s;
-
-                & img {
-                    width: 24px;
-                    height: 24px;
-                }
-            }
-
-            & button:hover {
-                background-color: var(--color-green-200);
-            }
-
-            & span {
-                color: var(--color-gray-200);
-                font-size: 14px;
-                font-weight: 400;
-            }
-        }
-    }
 }

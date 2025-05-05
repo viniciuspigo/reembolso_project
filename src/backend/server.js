@@ -10,10 +10,9 @@ const PORT = 3000;
 app.use(express.json())
 app.use(cors())
 
-// Servir arquivos estáticos da pasta public/ (relativo a src/backend/)
 app.use(express.static(path.join(__dirname, "../public"), {
     etag: false,
-    setHeaders: (res, path, stat) => {
+    setHeaders: (res) => {
         res.set("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
         res.set("Pragma", "no-cache");
         res.set("Expires", "0");
@@ -130,7 +129,7 @@ app.get("/solicitacoes", (req, res) => {
               paginaAtual: pagina,
               totalPaginas,
               totalRegistros: countResult.total,
-              dados: rows
+              registrosInfo: rows
           });
       });
   });
