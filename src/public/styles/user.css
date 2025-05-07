@@ -206,6 +206,7 @@ header {
 
     & .confirmation-section {
       display: none;
+
       & .confirmation-box {
         display: flex;
         flex-direction: column;

@@ -1,11 +1,11 @@
 let reembolsosAtuais = [];
 
 // Função que recebe pega as infos da API de reembolso e popula no HTML
-async function loadReembolsos(pagina = 1, nomeFiltro = "") {
+async function loadReembolsos(page = 1, filterName = "") {
   try {
-    const url = nomeFiltro
-      ? `http://localhost:3000/solicitacoes?pagina=${pagina}&nome=${encodeURIComponent(nomeFiltro)}`
-      : `http://localhost:3000/solicitacoes?pagina=${pagina}`;
+    const url = filterName
+      ? `http://localhost:3000/solicitacoes?pagina=${page}&nome=${encodeURIComponent(filterName)}`
+      : `http://localhost:3000/solicitacoes?pagina=${page}`;
 
     const response = await fetch(url);
     const data = await response.json();
@@ -72,22 +72,22 @@ async function loadReembolsos(pagina = 1, nomeFiltro = "") {
       refundOrder.appendChild(orderItem);
     });
 
-    updatePag(data.paginaAtual, data.totalPaginas);
-    configurarEventosClique();
+    updatePages(data.paginaAtual, data.totalPaginas);
+    configItensDetails();
   } catch (error) {
     console.error("Erro ao carregar reembolsos:", error.message);
   }
 }
 
 // Função que atualiza no html a paginação (Numero de paginas)
-function updatePag(paginaAtual, totalPaginas) {
+function updatePages(page, totalPages) {
   const btnAnterior = document.querySelector(".prev-btn");
   const btnProxima = document.querySelector(".next-btn");
   const paginaInfo = document.querySelector(".page-indicator");
 
-  btnAnterior.disabled = paginaAtual === 1;
-  btnProxima.disabled = paginaAtual === totalPaginas || totalPaginas === 0;
-  paginaInfo.textContent = `${paginaAtual}/${totalPaginas || 1}`;
+  btnAnterior.disabled = page === 1;
+  btnProxima.disabled = page === totalPages || totalPages === 0;
+  paginaInfo.textContent = `${page}/${totalPages || 1}`;
 }
 
 // Função que filtra a pesquisa do Input pelo nome do user
@@ -120,14 +120,13 @@ function configLogout() {
 }
 
 // DETALHES DO REEMBOLSO
-function configurarEventosClique() {
+function configItensDetails() {
   const refundInformation = document.querySelector(".refund-item-information");
   const refundContent = document.querySelector(".refund-content");
   const refundPanel = document.querySelector(".refund-panel");
   const nomeSolicitacaoInput = document.querySelector("#nomeSolicitacao");
   const categoriaInput = document.querySelector("#categoriaSelect");
   const valorInput = document.querySelector("#valorReembolso");
-  const comprovanteBtn = document.querySelector(".comprovante-btn");
 
   document.querySelectorAll(".order-item").forEach((item) => {
     item.addEventListener("click", () => {

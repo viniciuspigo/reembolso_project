@@ -46,6 +46,7 @@ function configLogout() {
   });
 }
 
+// Configuração do input de Arquivo
 function configFileInput() {
   uploadButton.addEventListener("click", () => {
     fileInput.click();
