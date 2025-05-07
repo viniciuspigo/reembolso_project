@@ -1,45 +1,47 @@
 const formSignUp = document.querySelector(".form-sign-up");
 
 // Carregar usuários já cadastrados do localStorage
-let usuarios = JSON.parse(localStorage.getItem("usuarios")) || [];
+let users = JSON.parse(localStorage.getItem("usuarios")) || [];
 
-function mostrarMensagem(texto, cor) {
+// Função para mostrar mensagem de erro ou algum aviso
+function showMessage(text, color) {
   const message = document.querySelector(".message");
   message.style.display = "block";
-  message.style.color = cor;
-  message.innerText = texto;
+  message.style.color = color;
+  message.innerText = text;
   setTimeout(() => {
     message.style.display = "none";
   }, 5000);
 }
 
-function limparCampos() {
+// Função para limpar todos os inputs do form
+function clearInputs() {
   document.querySelector("#input-fullname").value = "";
   document.querySelector("#input-email").value = "";
   document.querySelector("#input-password").value = "";
   document.querySelector("#input-password-confirmation").value = "";
 }
 
-function validarSenha(password) {
-  // A senha deve ter pelo menos 8 caracteres, pelo menos uma letra e um número
+// Função para validar a senha
+function validatePassword(password) {
   const regex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
   return regex.test(password);
 }
 
-function validarEmail(email) {
+// Função para validar o email
+function validateEmail(email) {
   const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   return regex.test(email);
 }
 
-function cadastrarUsuario(ev) {
+// Função pra criar o user e salvar no localStorage (momentaneo)
+function registerUser(ev) {
   ev.preventDefault();
 
   const fullname = document.querySelector("#input-fullname").value.trim();
   const email = document.querySelector("#input-email").value.trim();
   const password = document.querySelector("#input-password").value.trim();
-  const passwordConfirmation = document
-    .querySelector("#input-password-confirmation")
-    .value.trim();
+  const passwordConfirmation = document.querySelector("#input-password-confirmation").value.trim();
 
   if (
     fullname === "" ||
@@ -47,13 +49,13 @@ function cadastrarUsuario(ev) {
     password === "" ||
     passwordConfirmation === ""
   ) {
-    mostrarMensagem("Por favor, preencha todos os campos.", "red");
+    showMessage("Por favor, preencha todos os campos.", "red");
     return;
   }
 
   // Valida se a senha é forte
-  if (!validarSenha(password)) {
-    mostrarMensagem(
+  if (!validatePassword(password)) {
+    showMessage(
       "A senha deve ter no mínimo 8 caracteres e conter letras e números.",
       "red"
     );
@@ -61,42 +63,43 @@ function cadastrarUsuario(ev) {
   }
 
   // Validação do e-mail
-  if (!validarEmail(email)) {
-    mostrarMensagem("Por favor, insira um email válido.", "red");
+  if (!validateEmail(email)) {
+    showMessage("Por favor, insira um email válido.", "red");
     return;
   }
 
   if (password !== passwordConfirmation) {
-    mostrarMensagem("As senhas não coincidem!", "red");
+    showMessage("As senhas não coincidem!", "red");
     return;
   }
 
   const hashedPassword = sha256(password);
 
-  const novoUsuario = {
+  const newUser = {
     fullname,
     email,
     password: hashedPassword,
     role: "user",
   };
 
-  usuarios.push(novoUsuario);
-  localStorage.setItem("usuarios", JSON.stringify(usuarios));
+  users.push(newUser);
+  localStorage.setItem("usuarios", JSON.stringify(users));
 
-  mostrarMensagem("Cadastro realizado com sucesso!", "green");
+  showMessage("Cadastro realizado com sucesso!", "green");
 
-  limparCampos();
+  clearInputs();
 
   setTimeout(() => {
     window.location.href = "sign-in.html";
-  }, 3000);
+  }, 1000);
 }
 
-function criarUsuarioAdmin() {
-  let usuarios = JSON.parse(localStorage.getItem("usuarios")) || [];
+// Função pra criar o userAdmin e salvar no localStorage (momentaneo)
+function registerAdminUser() {
+  let users = JSON.parse(localStorage.getItem("usuarios")) || [];
 
   // Verifica se o admin já existe
-  if (usuarios.some(user => user.email === "admin@exemplo.com")) {
+  if (users.some(user => user.email === "admin@exemplo.com")) {
     console.log("Usuário admin já existe.");
     return;
   }
@@ -104,18 +107,18 @@ function criarUsuarioAdmin() {
   const adminPassword = "Admin123";
   const hashedPassword = sha256(adminPassword);
 
-  const adminUsuario = {
+  const userAdmin = {
     fullname: "Admin User",
     email: "admin@exemplo.com",
     password: hashedPassword,
     role: "admin"
   };
 
-  usuarios.push(adminUsuario);
-  localStorage.setItem("usuarios", JSON.stringify(usuarios));
+  users.push(userAdmin);
+  localStorage.setItem("usuarios", JSON.stringify(users));
   console.log("Usuário admin criado com sucesso!");
 }
 
-criarUsuarioAdmin()
+registerAdminUser()
 
-formSignUp.addEventListener("submit", cadastrarUsuario);
+formSignUp.addEventListener("submit", registerUser);
