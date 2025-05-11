@@ -24,7 +24,7 @@ async function loadReembolsos(page = 1, filterName = "") {
       const orderItem = document.createElement("div");
       orderItem.className = "order-item";
       orderItem.id = `order-${index + 1}`;
-      orderItem.dataset.index = index; // Define o índice correto
+      orderItem.dataset.index = index;
 
       let iconePath;
       switch (reembolso.categoria.toLowerCase()) {
@@ -73,7 +73,7 @@ async function loadReembolsos(page = 1, filterName = "") {
     });
 
     updatePages(data.paginaAtual, data.totalPaginas);
-    configItensDetails();
+    configItensDetails()
   } catch (error) {
     console.error("Erro ao carregar reembolsos:", error.message);
   }
@@ -132,10 +132,11 @@ function configItensDetails() {
     item.addEventListener("click", () => {
       const index = parseInt(item.dataset.index, 10);
       const reembolso = reembolsosAtuais[index];
+      console.log(reembolsosAtuais)
       if (reembolso) {
         nomeSolicitacaoInput.value = reembolso.nome;
         categoriaInput.value = reembolso.categoria;
-        valorInput.value = reembolso.valor.toFixed(2);
+        valorInput.value = parseFloat(reembolso.valor).toFixed(2);
 
         refundInformation.style.display = "flex";
         refundContent.style.display = "none";
@@ -199,7 +200,5 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
 
-  document.querySelector(".refund-filter button").addEventListener("click", pesquisarPorNome);
-
-  console.log(reembolsosAtuais)
+  document.querySelector(".refund-filter button").addEventListener("click", searchByName);
 });

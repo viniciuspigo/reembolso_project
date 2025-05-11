@@ -1,8 +1,3 @@
-const formSignUp = document.querySelector(".form-sign-up");
-
-// Carregar usuários já cadastrados do localStorage
-let users = JSON.parse(localStorage.getItem("usuarios")) || [];
-
 // Função para mostrar mensagem de erro ou algum aviso
 function showMessage(text, color) {
   const message = document.querySelector(".message");
@@ -34,27 +29,29 @@ function validateEmail(email) {
   return regex.test(email);
 }
 
-// Função pra criar o user e salvar no localStorage (momentaneo)
-function registerUser(ev) {
+// Função pra criar o user e salvar no bd
+async function registerUser(ev) {
   ev.preventDefault();
 
-  const fullname = document.querySelector("#input-fullname").value.trim();
+  const nome_completo = document.querySelector("#input-fullname").value.trim();
   const email = document.querySelector("#input-email").value.trim();
-  const password = document.querySelector("#input-password").value.trim();
-  const passwordConfirmation = document.querySelector("#input-password-confirmation").value.trim();
+  const senha = document.querySelector("#input-password").value.trim();
+  const senhaConfirmation = document
+    .querySelector("#input-password-confirmation")
+    .value.trim();
 
   if (
-    fullname === "" ||
+    nome_completo === "" ||
     email === "" ||
-    password === "" ||
-    passwordConfirmation === ""
+    senha === "" ||
+    senhaConfirmation === ""
   ) {
     showMessage("Por favor, preencha todos os campos.", "red");
     return;
   }
 
   // Valida se a senha é forte
-  if (!validatePassword(password)) {
+  if (!validatePassword(senha)) {
     showMessage(
       "A senha deve ter no mínimo 8 caracteres e conter letras e números.",
       "red"
@@ -68,57 +65,61 @@ function registerUser(ev) {
     return;
   }
 
-  if (password !== passwordConfirmation) {
+  if (senha !== senhaConfirmation) {
     showMessage("As senhas não coincidem!", "red");
     return;
   }
 
-  const hashedPassword = sha256(password);
+  try {
+    const response = await fetch("http://localhost:3000/usuarios/register", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ nome_completo, email, senha, role: "user" }),
+    });
 
-  const newUser = {
-    fullname,
-    email,
-    password: hashedPassword,
-    role: "user",
-  };
+    if (!response.ok) {
+      const text = await response.text();
+      throw new Error(
+        `Erro ${response.status}: ${text || "Sem resposta do servidor"}`
+      );
+    }
 
-  users.push(newUser);
-  localStorage.setItem("usuarios", JSON.stringify(users));
-
-  showMessage("Cadastro realizado com sucesso!", "green");
-
-  clearInputs();
-
-  setTimeout(() => {
-    window.location.href = "sign-in.html";
-  }, 1000);
-}
-
-// Função pra criar o userAdmin e salvar no localStorage (momentaneo)
-function registerAdminUser() {
-  let users = JSON.parse(localStorage.getItem("usuarios")) || [];
-
-  // Verifica se o admin já existe
-  if (users.some(user => user.email === "admin@exemplo.com")) {
-    console.log("Usuário admin já existe.");
-    return;
+    const data = await response.json(); // Linha 82: Deve ser response.json() com parênteses
+    showMessage(data.message, "green");
+    clearInputs();
+    setTimeout(() => {
+      window.location.href = "sign-in.html";
+    }, 1000);
+  } catch (error) {
+    showMessage("Erro ao cadastrar usuário: " + error.message, "red");
+    console.error(error);
   }
-
-  const adminPassword = "Admin123";
-  const hashedPassword = sha256(adminPassword);
-
-  const userAdmin = {
-    fullname: "Admin User",
-    email: "admin@exemplo.com",
-    password: hashedPassword,
-    role: "admin"
-  };
-
-  users.push(userAdmin);
-  localStorage.setItem("usuarios", JSON.stringify(users));
-  console.log("Usuário admin criado com sucesso!");
 }
 
-registerAdminUser()
+// Função pra criar o userAdmin e salvar no bd
+async function registerAdminUser() {
+  try {
+    const response = await fetch(
+      "http://localhost:3000/usuarios/create-admin",
+      {
+        method: "GET",
+      }
+    );
 
-formSignUp.addEventListener("submit", registerUser);
+    const data = await response.json();
+    console.log(data.message);
+  } catch (error) {
+    console.error("Erro ao criar usuário admin:", error);
+  }
+}
+
+// Forçar a criação do user adm
+document.addEventListener("DOMContentLoaded", () => {
+  registerAdminUser();
+});
+
+document
+  .querySelector(".form-sign-up")
+  .addEventListener("submit", registerUser);

@@ -23,7 +23,7 @@ function resetForm() {
   categoriaSelect.style.borderColor = "";
 }
 
-// Verificação do usuário pelo localStorage (POR ENQUANTO) | Vou deixar em um BD no futuro
+// Verificação do usuário pelo localStorage
 function verifyUser() {
   const usuarioLogado = JSON.parse(localStorage.getItem("usuarioLogado"));
   if (!usuarioLogado || usuarioLogado.role !== "user") {
@@ -60,20 +60,15 @@ function configFileInput() {
   });
 }
 
-// Função para enviar a Req no BD (SQLite)
+// Função para enviar a Req no BD
 async function enviarSolicitacao(ev, usuarioLogado) {
   ev.preventDefault();
 
-  const nomeSolicitacao = document
-    .querySelector("#nomeSolicitacao")
-    .value.trim();
+  const nomeSolicitacao = document.querySelector("#nomeSolicitacao").value.trim();
   const select = document.querySelector("#categoriaSelect");
   const categoria = select.value;
-  const valorReembolso = parseFloat(
-    document.querySelector("#valorReembolso").value
-  );
-  const comprovante =
-    fileInput.files.length > 0 ? fileInput.files[0].name : null;
+  const valorReembolso = parseFloat(document.querySelector("#valorReembolso").value);
+  const comprovante = fileInput.files.length > 0 ? fileInput.files[0].name : null;
 
   if (categoria === "selecione") {
     select.style.borderColor = "red";
@@ -84,12 +79,12 @@ async function enviarSolicitacao(ev, usuarioLogado) {
   }
 
   const solicitacao = {
-    usuarioEmail: usuarioLogado.email,
+    email: usuarioLogado.email,
     nome: nomeSolicitacao,
     categoria: categoria,
     valor: valorReembolso,
     comprovante: comprovante,
-    createdAt: new Date().toISOString(),
+    data_criacao: new Date().toISOString(),
   };
 
   try {
@@ -103,10 +98,9 @@ async function enviarSolicitacao(ev, usuarioLogado) {
 
     const data = await response.json();
     if (!response.ok) {
-      throw new Error(data.error || "Erro ao enviar solicitação.");
+      throw new Error(data.message || "Erro ao enviar solicitação.");
     }
 
-    // Ativa a div escondida no html de confirmação do form
     form.style.display = "none";
     confirmationSection.style.display = "block";
   } catch (error) {
@@ -127,7 +121,7 @@ document.addEventListener("DOMContentLoaded", () => {
   if (!usuarioLogado) return;
 
   // Mostrar o nome do user no header
-  document.querySelector("#user-name").textContent = usuarioLogado.fullname;
+  document.querySelector("#user-name").textContent = usuarioLogado.nome_completo;
 
   form.addEventListener("submit", (ev) => enviarSolicitacao(ev, usuarioLogado));
 

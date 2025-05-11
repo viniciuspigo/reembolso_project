@@ -9,8 +9,9 @@ function showMessage(text, color) {
     }, 5000);
   }
 
-function login(ev) {
+async function login(ev) {
   ev.preventDefault();
+
   const email = document.querySelector("#input-email").value.trim();
   const password = document.querySelector("#input-password").value.trim();
 
@@ -19,33 +20,36 @@ function login(ev) {
     return;
   }
 
-  // Carrega os users do localStorage
-  let users = [];
   try {
-    users = JSON.parse(localStorage.getItem("usuarios")) || [];
-  } catch (e) {
-    showMessage("Erro ao carregar dados. Tente novamente.", "red");
-    return;
+    const response = await fetch("http://localhost:3000/usuarios/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email, senha: password }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || "Erro ao fazer login.");
+    }
+
+    const data = await response.json();
+    showMessage(data.message, "green");
+
+    // Salvar o usuário logado no localStorage (opcional, para uso nas páginas user.html/admin.html)
+    localStorage.setItem("usuarioLogado", JSON.stringify(data.user));
+
+    // Redirecionar com base na role
+    if (data.user.role === "user") {
+      window.location.href = "user.html";
+    } else if (data.user.role === "admin") {
+      window.location.href = "admin.html";
+    }
+  } catch (error) {
+    showMessage(error.message, "red");
+    console.error("Erro ao fazer login:", error);
   }
-
-  const hashedPassword = sha256(password);
-  const user = users.find(user => user.email === email && user.password === hashedPassword);
-
-  if (!user) {
-    showMessage("Email ou senha incorretos.", "red");
-    return;
-  }
-
-  localStorage.setItem("usuarioLogado", JSON.stringify(user));
-
-  if (user.role === "user") {
-    window.location.href = "user.html"
-  } else if (user.role === "admin") {
-    window.location.href = "admin.html"
-  }
-
-  localStorage.setItem("usuarioLogado", JSON.stringify(user));
 }
 
-const formSignIn = document.querySelector(".form-sign-in")
-.addEventListener("submit", login);
+document.querySelector(".form-sign-in").addEventListener("submit", login);
