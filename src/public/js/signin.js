@@ -38,13 +38,14 @@ async function login(ev) {
     showMessage(data.message, "green");
 
     // Salvar o usuário logado no localStorage (opcional, para uso nas páginas user.html/admin.html)
-    localStorage.setItem("usuarioLogado", JSON.stringify(data.user));
-    console.log(data.user)
+    localStorage.setItem("token", data.token)
+    localStorage.setItem("role", data.role)
+    console.log(data.token, data.role)
 
     // Redirecionar com base na role
-    if (data.user.role === "user") {
+    if (data.role === "user") {
       window.location.href = "user.html";
-    } else if (data.user.role === "admin") {
+    } else if (data.role === "admin") {
       window.location.href = "admin.html";
     }
   } catch (error) {

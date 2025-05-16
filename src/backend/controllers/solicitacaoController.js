@@ -124,6 +124,10 @@ const solicitacaoController = {
         return res.status(400).json({ message: "ID da solicitação é inválido!" });
       }
 
+      if (req.user.role !== "admin") {
+        return res.status(403).json({ message: "Apenas administradores podem excluir solicitações!" });
+      }
+
       await deleteSolicitacaoFromDB(req.app.get('mysqlPool'), {
         id: id
       })

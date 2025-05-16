@@ -9,7 +9,7 @@ module.exports = {
 
   async deleteSolicitacaoFromDB(mysqlPool, { id }) {
     const query = `
-    DELETE FROM solicitacao WHERE id = ?
+    DELETE FROM solicitacao WHERE (id = ?)
     `;
     await mysqlPool.execute(query, [id]);
   }

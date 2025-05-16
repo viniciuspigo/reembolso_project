@@ -3,17 +3,37 @@ let reembolsosAtuais = [];
 // Função que recebe pega as infos da API de reembolso e popula no HTML
 async function loadReembolsos(page = 1, filterName = "") {
   try {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      throw new Error("Token não encontrado. Faça login novamente.");
+    }
+
     const url = filterName
       ? `http://localhost:3000/solicitacoes?pagina=${page}&nome=${encodeURIComponent(
           filterName
         )}`
       : `http://localhost:3000/solicitacoes?pagina=${page}`;
 
-    const response = await fetch(url);
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`,
+      },
+    });
+
     const data = await response.json();
 
     if (!response.ok) {
-      throw new Error(data.error || "Erro ao carregar reembolsos");
+      const errorData = await response.json();
+      if (response.status === 401 || response.status === 403) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("role");
+        window.location.href = "sign-in.html";
+        return;
+      } else {
+        throw new Error(errorData.message || "Erro ao carregar dados");
+      }
     }
 
     reembolsosAtuais = data.registrosInfo;
@@ -106,16 +126,25 @@ async function deleteReembolso() {
           method: "DELETE",
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
           },
         }
       );
 
-      const data = response.json();
-
       if (!response.ok) {
-        throw new Error(data.error || "Erro ao deletar reembolso!");
+      const errorData = await response.json();
+      if (response.status === 401 || response.status === 403) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("role");
+        window.location.href = "sign-in.html";
+        return;
+      } else {
+        throw new Error(errorData.message || "Erro ao carregar dados");
       }
+    }
 
+      /* const data = response.json();
+      alert(data.message) */
       loadReembolsos(1);
       refundInformation.style.display = "none";
       refundContent.style.display = "flex";
@@ -125,7 +154,7 @@ async function deleteReembolso() {
       alert("Erro ao deletar o reembolso!");
     }
   } else {
-    return
+    return;
   }
 }
 
@@ -150,21 +179,27 @@ function searchByName() {
 
 // Verificação do usuário pelo localStorage (POR ENQUANTO) | Vou deixar em um BD no futuro
 function verifyUser() {
-  const usuarioLogado = JSON.parse(localStorage.getItem("usuarioLogado"));
-  if (!usuarioLogado || usuarioLogado.role !== "admin") {
-    window.location.href =
-      usuarioLogado && usuarioLogado.role === "user"
-        ? "user.html"
-        : "sign-in.html";
-    return null;
+  const token = localStorage.getItem("token");
+  const role = localStorage.getItem("role");
+
+  if (!token || !role) {
+    window.location.href = "sign-in.html";
+    return null
   }
-  return usuarioLogado;
+
+  if (role !== "admin") {
+    window.location.href = role === "user" ? "user.html" : "admin.html";
+    return null
+  }
+
+  return { token, role }
 }
 
 // Configuração do btn de logout
 function configLogout() {
   document.querySelector(".logout-btn").addEventListener("click", () => {
-    localStorage.removeItem("usuarioLogado");
+    localStorage.removeItem("token");
+    localStorage.removeItem("role")
     setTimeout(() => {
       window.location.href = "sign-in.html";
     }, 150);
@@ -206,7 +241,9 @@ function configItensDetails() {
     refundPanel.style.width = "1082px";
   });
 
-  document.querySelector("#deleteBtn").addEventListener("click", deleteReembolso);
+  document
+    .querySelector("#deleteBtn")
+    .addEventListener("click", deleteReembolso);
 }
 
 // Quando a pagina é carregada, ativa tudo o que estiver dentro da função
@@ -249,15 +286,11 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // Pesquisa pelo nome que o usuário digitou no input
-  document
-    .querySelector(".refund-filter input")
-    .addEventListener("keypress", (ev) => {
+  document.querySelector(".refund-filter input").addEventListener("keypress", (ev) => {
       if (ev.key === "Enter") {
         searchByName();
       }
     });
 
-  document
-    .querySelector(".refund-filter button")
-    .addEventListener("click", searchByName);
+  document.querySelector(".refund-filter button").addEventListener("click", searchByName);
 });

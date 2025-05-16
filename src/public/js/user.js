@@ -24,21 +24,27 @@ function resetForm() {
 
 // Verificação do usuário pelo localStorage
 function verifyUser() {
-  const usuarioLogado = JSON.parse(localStorage.getItem("usuarioLogado"));
-  if (!usuarioLogado || usuarioLogado.role !== "user") {
-    window.location.href =
-      usuarioLogado && usuarioLogado.role === "admin"
-        ? "admin.html"
-        : "sign-in.html";
+  const token = localStorage.getItem("token");
+  const role = localStorage.getItem("role");
+
+  if (!token || !role) {
+    window.location.href = "sign-in.html";
     return null;
   }
-  return usuarioLogado;
+
+  if (role !== "user") {
+    window.location.href = role === "admin" ? "admin.html" : "sign-in.html";
+    return null;
+  }
+
+  return { token, role };
 }
 
 // Configuração do btn de logout
 function configLogout() {
   document.querySelector(".logout-btn").addEventListener("click", () => {
-    localStorage.removeItem("usuarioLogado");
+    localStorage.removeItem("token");
+    localStorage.removeItem("role");
     setTimeout(() => {
       window.location.href = "sign-in.html";
     }, 150);
@@ -64,11 +70,16 @@ function configFileInput() {
 async function enviarSolicitacao(ev, usuarioLogado) {
   ev.preventDefault();
 
-  const nomeSolicitacao = document.querySelector("#nomeSolicitacao").value.trim();
+  const nomeSolicitacao = document
+    .querySelector("#nomeSolicitacao")
+    .value.trim();
   const select = document.querySelector("#categoriaSelect");
   const categoria = select.value;
-  const valorReembolso = parseFloat(document.querySelector("#valorReembolso").value);
-  const comprovante = fileInput.files.length > 0 ? fileInput.files[0].name : null;
+  const valorReembolso = parseFloat(
+    document.querySelector("#valorReembolso").value
+  );
+  const comprovante =
+    fileInput.files.length > 0 ? fileInput.files[0].name : null;
 
   if (categoria === "selecione") {
     select.style.borderColor = "red";
@@ -96,7 +107,7 @@ async function enviarSolicitacao(ev, usuarioLogado) {
     });
 
     const data = await response.json();
-    
+
     if (!response.ok) {
       throw new Error(data.message || "Erro ao enviar solicitação.");
     }
@@ -122,10 +133,10 @@ document.addEventListener("DOMContentLoaded", () => {
   if (!usuarioLogado) return;
 
   // Mostrar o nome do user no header
-  document.querySelector("#user-name").textContent = usuarioLogado.nome_completo;
+  document.querySelector("#user-name").textContent = usuarioLogado.nome || "Usuário";
 
   form.addEventListener("submit", (ev) => enviarSolicitacao(ev, usuarioLogado));
 
   configLogout();
-  configFileInput()
+  configFileInput();
 });

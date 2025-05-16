@@ -1,3 +1,4 @@
+const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const { createUser, findUserByEmail } = require("../models/usuario");
 
@@ -68,29 +69,31 @@ const usuarioController = {
 
     try {
       if (!email || !senha) {
-        return res.status(400).json({ message: 'Email e senha são obrigatórios.' });
+        return res
+          .status(400)
+          .json({ message: "Email e senha são obrigatórios." });
       }
 
-      const user = await findUserByEmail(req.app.get('mysqlPool'), email);
+      const user = await findUserByEmail(req.app.get("mysqlPool"), email);
       const passwordValidation = await bcrypt.compare(senha, user.senha);
 
       if (!user || !passwordValidation) {
-        return res.status(401).json({ message: 'Email ou senha incorretos.' });
+        return res.status(401).json({ message: "Email ou senha incorretos." });
       }
+
+      // Assinatura do token
+      const token = jwt.sign({ id: user.id, role: user.role }, process.env.JWT_SECRET, { expiresIn: "1h" });
 
       // Retornar informações do usuário
       res.status(200).json({
-        message: 'Login bem-sucedido!',
-        user: {
-          nome_completo: user.nome_completo,
-          email: user.email,
-          role: user.role,
-        },
+        message: "Login bem-sucedido!",
+        token: token,
+        role: user.role
       });
     } catch (error) {
-      res.status(500).json({ message: 'Erro ao fazer login.' });
+      res.status(500).json({ message: "Erro ao fazer login." });
     }
-  }
+  },
 };
 
 module.exports = usuarioController;
