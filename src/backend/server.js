@@ -32,8 +32,6 @@ const mysqlPool = mysql.createPool({
   database: process.env.DB_NAME,
 });
 
-const { authenticateToken } = require("./middleware/auth")
-
 // Carregar rotas
 const solicitacaoRoutes = require('./routes/solicitacoes');
 const usuarioRoutes = require('./routes/usuarios');

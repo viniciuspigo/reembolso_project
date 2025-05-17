@@ -22,6 +22,26 @@ function resetForm() {
   categoriaSelect.style.borderColor = "";
 }
 
+// Função para decodificar o token JWT
+function decodeToken(token) {
+  try {
+    const base64Url = token.split(".")[1];
+    const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+    const jsonPayload = decodeURIComponent(
+      atob(base64)
+        .split("")
+        .map(function (c) {
+          return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
+        })
+        .join("")
+    );
+    return JSON.parse(jsonPayload);
+  } catch (error) {
+    console.error("Erro ao decodificar token:", error);
+    return null;
+  }
+}
+
 // Verificação do usuário pelo localStorage
 function verifyUser() {
   const token = localStorage.getItem("token");
@@ -37,9 +57,9 @@ function verifyUser() {
     return null;
   }
 
-  return { token, role };
+  const decoded = decodeToken(token);
+  return { token, role, email: decoded.email };
 }
-
 // Configuração do btn de logout
 function configLogout() {
   document.querySelector(".logout-btn").addEventListener("click", () => {
@@ -80,6 +100,7 @@ async function enviarSolicitacao(ev, usuarioLogado) {
   );
   const comprovante =
     fileInput.files.length > 0 ? fileInput.files[0].name : null;
+  const token = localStorage.getItem("token");
 
   if (categoria === "selecione") {
     select.style.borderColor = "red";
@@ -98,10 +119,15 @@ async function enviarSolicitacao(ev, usuarioLogado) {
   };
 
   try {
+    if (!token) {
+      throw new Error("Token não encontrado. Faça login novamente.");
+    }
+
     const response = await fetch("http://localhost:3000/solicitacoes", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(solicitacao),
     });
@@ -109,6 +135,12 @@ async function enviarSolicitacao(ev, usuarioLogado) {
     const data = await response.json();
 
     if (!response.ok) {
+      if (response.status === 401 || response.status === 403) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("role");
+        window.location.href = "sign-in.html";
+        return;
+      }
       throw new Error(data.message || "Erro ao enviar solicitação.");
     }
 
@@ -133,7 +165,8 @@ document.addEventListener("DOMContentLoaded", () => {
   if (!usuarioLogado) return;
 
   // Mostrar o nome do user no header
-  document.querySelector("#user-name").textContent = usuarioLogado.nome || "Usuário";
+  document.querySelector("#user-name").textContent =
+    usuarioLogado.nome || "Usuário";
 
   form.addEventListener("submit", (ev) => enviarSolicitacao(ev, usuarioLogado));
 

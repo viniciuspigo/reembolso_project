@@ -6,9 +6,11 @@ const solicitacaoController = {
 
     try {
       if (!email || !nome || !categoria || !valor) {
-        return res
-          .status(400)
-          .json({ message: "Campos obrigatórios não preenchidos." });
+        return res.status(400).json({ message: "Campos obrigatórios não preenchidos." });
+      }
+
+      if (req.user.role !== "user") {
+        return res.status(401).json({ message: "Apenas usuários podem criar uma solicitacação"})
       }
 
       await createSolicitacaoToDB(req.app.get("mysqlPool"), {
@@ -32,8 +34,7 @@ const solicitacaoController = {
     const offset = (pagina - 1) * limite;
     const nomeFiltro = req.query.nome ? `%${req.query.nome}%` : null;
     const idFiltro = req.query.id ? parseInt(req.query.id) : null;
-    const emailFiltro =
-      req.query.email && req.query.email.trim() !== "" ? req.query.email : null;
+    const emailFiltro = req.query.email && req.query.email.trim() !== "" ? req.query.email : null;
 
     if (pagina < 1) {
       return res

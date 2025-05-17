@@ -2,8 +2,9 @@ let reembolsosAtuais = [];
 
 // Função que recebe pega as infos da API de reembolso e popula no HTML
 async function loadReembolsos(page = 1, filterName = "") {
+  const token = localStorage.getItem("token");
+  
   try {
-    const token = localStorage.getItem("token");
     if (!token) {
       throw new Error("Token não encontrado. Faça login novamente.");
     }
@@ -25,14 +26,13 @@ async function loadReembolsos(page = 1, filterName = "") {
     const data = await response.json();
 
     if (!response.ok) {
-      const errorData = await response.json();
       if (response.status === 401 || response.status === 403) {
         localStorage.removeItem("token");
         localStorage.removeItem("role");
         window.location.href = "sign-in.html";
         return;
       } else {
-        throw new Error(errorData.message || "Erro ao carregar dados");
+        throw new Error(data.message || "Erro ao carregar dados");
       }
     }
 
@@ -107,6 +107,7 @@ async function deleteReembolso() {
   const refundContent = document.querySelector(".refund-content");
   const refundPanel = document.querySelector(".refund-panel");
   const reembolsoId = refundInformation.dataset.reembolsoId;
+  const token = localStorage.getItem("token");
 
   if (!reembolsoId) {
     console.error("ID do reembolso não encontrado!");
@@ -130,16 +131,17 @@ async function deleteReembolso() {
           },
         }
       );
+      
+      const data = await response.json();
 
       if (!response.ok) {
-      const errorData = await response.json();
       if (response.status === 401 || response.status === 403) {
         localStorage.removeItem("token");
         localStorage.removeItem("role");
         window.location.href = "sign-in.html";
         return;
       } else {
-        throw new Error(errorData.message || "Erro ao carregar dados");
+        throw new Error(data.message || "Erro ao carregar dados");
       }
     }
 
@@ -151,6 +153,7 @@ async function deleteReembolso() {
       refundPanel.style.width = "1082px";
     } catch (error) {
       console.error("Erro ao deletar reembolso:", error.message);
+      console.log(error, error.message)
       alert("Erro ao deletar o reembolso!");
     }
   } else {

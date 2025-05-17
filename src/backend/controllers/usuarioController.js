@@ -82,13 +82,14 @@ const usuarioController = {
       }
 
       // Assinatura do token
-      const token = jwt.sign({ id: user.id, role: user.role }, process.env.JWT_SECRET, { expiresIn: "1h" });
+      const token = jwt.sign({ id: user.id, role: user.role, email: user.email }, process.env.JWT_SECRET, { expiresIn: "1h" });
 
       // Retornar informações do usuário
       res.status(200).json({
         message: "Login bem-sucedido!",
         token: token,
-        role: user.role
+        email: user.email,
+        role: user.role,
       });
     } catch (error) {
       res.status(500).json({ message: "Erro ao fazer login." });
