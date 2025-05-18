@@ -8,9 +8,18 @@ module.exports = {
   },
 
   async deleteSolicitacaoFromDB(mysqlPool, { id }) {
-    const query = `
-    DELETE FROM solicitacao WHERE (id = ?)
-    `;
-    await mysqlPool.execute(query, [id]);
+    const checkQuery = `SELECT id FROM solicitacao WHERE (id = ?)`
+    const [rows] = await mysqlPool.execute(checkQuery, [id]) 
+
+    if (rows.length === 0) {
+      throw new Error("Nenhuma solicitação encontrada com esse ID.")
+      }
+
+    const deleteQuery = `DELETE FROM solicitacao WHERE (id = ?)`;
+    const result = await mysqlPool.execute(deleteQuery, [id]);
+
+    if (result.affectedRows === 0 ) {
+      throw new Error ("Nenhuma Solicitação encontrada.")
+    }
   }
 };

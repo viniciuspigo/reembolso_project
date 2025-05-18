@@ -136,6 +136,9 @@ const solicitacaoController = {
       return res.status(200).json({ message: "Solicitação excluída com sucesso!"})
     } catch (error) {
       console.error("Erro ao excluir solicitação:", error.message);
+      if (error.message === "Nenhuma solicitação encontrada com esse ID.") {
+        return res.status(404).json({ message: error.message });
+      }
       res.status(500).json({ message: "Erro ao excluir solicitação." });
     }
   }

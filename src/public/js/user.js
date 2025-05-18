@@ -164,9 +164,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const usuarioLogado = verifyUser();
   if (!usuarioLogado) return;
 
+  const emailFormatado = usuarioLogado.email.split("@")[0] 
   // Mostrar o nome do user no header
-  document.querySelector("#user-name").textContent =
-    usuarioLogado.nome || "Usuário";
+  document.querySelector("#user-name").textContent = emailFormatado || "Usuário";
 
   form.addEventListener("submit", (ev) => enviarSolicitacao(ev, usuarioLogado));
 
