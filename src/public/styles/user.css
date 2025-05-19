@@ -1,5 +1,5 @@
 header {
-  width: 100%;
+  max-width: 100%;
 }
 
 .header-content {
@@ -134,7 +134,8 @@ header {
       & .categoriaValor {
         display: flex;
         flex-direction: row;
-        width: 100%;
+        flex: 1;
+        max-width: 100%;
         gap: 16px;
 
         & .categoria,
@@ -144,11 +145,11 @@ header {
         }
 
         & .categoria {
-          width: 262px;
+          width: 45%;
         }
 
         & .valor {
-          width: 164px;
+          width: 55%;
         }
       }
 
@@ -249,5 +250,120 @@ header {
         }
       }
     }
+  }
+}
+
+@media (max-width: 530px) {
+  .header-content {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 24px 16px 0 16px;
+
+    .welcome p {
+      font-size: 13px;
+    }
+  }
+
+  .container {
+    padding: 16px;
+
+    & .refund-request {
+      width: 100%;
+      max-width: 100%;
+      padding: 24px 20px;
+      border-radius: 12px;
+
+      .content {
+        gap: 8px;
+        margin-bottom: 24px;
+
+        h1 {
+          font-size: 18px;
+          text-align: center;
+        }
+
+        p {
+          font-size: 13px;
+          text-align: center;
+        }
+      }
+    }
+  }
+
+  & #user-form-inputs {
+    & .categoriaValor {
+      flex-direction: column !important;
+
+      & .categoria {
+        width: 100% !important;
+      }
+
+      & .valor {
+        width: 100% !important;
+      }
+    }
+  }
+
+  .uploadContainer .custom-file-input {
+    flex-direction: row;
+    flex-wrap: nowrap;
+    gap: 8px;
+  }
+
+  .file-name {
+    font-size: 13px;
+  }
+
+  .btnSubmit button,
+  .confirmation-btn button {
+    font-size: 13px;
+    padding: 12px 16px;
+  }
+
+  .confirmation-box h2 {
+    font-size: 20px;
+    text-align: center;
+  }
+
+  .confirmation-box p {
+    font-size: 13px;
+    text-align: center;
+  }
+}
+
+@media (max-width: 375px) {
+  .header-content {
+    padding: 20px 12px 0 12px;
+  }
+
+  .refund-request {
+    padding: 20px 16px;
+  }
+
+  .refund-request .content h1 {
+    font-size: 16px;
+  }
+
+  .refund-request .content p {
+    font-size: 12px;
+  }
+
+  .file-name {
+    font-size: 12px;
+  }
+
+  .btnSubmit button,
+  .confirmation-btn button {
+    font-size: 12px;
+    padding: 10px 14px;
+  }
+
+  .confirmation-box h2 {
+    font-size: 18px;
+  }
+
+  .confirmation-box p {
+    font-size: 12px;
   }
 }
