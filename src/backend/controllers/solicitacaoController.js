@@ -1,16 +1,58 @@
+const { supabase } = require("../config/supabase");
 const { createSolicitacaoToDB, deleteSolicitacaoFromDB } = require("../models/solicitacao");
 
 const solicitacaoController = {
   async createSolicitacao(req, res) {
-    const { email, nome, categoria, valor, comprovante } = req.body;
-
     try {
+
+      const { email, nome, categoria, valor } = req.body;
+      const comprovante = req.file;
+
       if (!email || !nome || !categoria || !valor) {
-        return res.status(400).json({ message: "Campos obrigatórios não preenchidos." });
+        return res
+          .status(400)
+          .json({ message: "Campos obrigatórios não preenchidos." });
       }
 
       if (req.user.role !== "user") {
-        return res.status(401).json({ message: "Apenas usuários podem criar uma solicitacação"})
+        return res
+          .status(401)
+          .json({ message: "Apenas usuários podem criar uma solicitacação." });
+      }
+
+      if (comprovante && comprovante.mimetype !== "application/pdf") {
+        return res.status(400).json({ message: "O arquivo de comprovante deve ser um PDF." });}
+
+      let comprovanteUrl = null;
+      if (comprovante) {
+        // Upload para o Supabase
+        const fileName = `comprovantes-reembolso/${Date.now()}_${comprovante.originalname}`;
+        console.log("Fazendo upload para Supabase:", fileName);
+        const { data, error } = await supabase.storage.from("comprovantes-reembolso")
+        .upload(fileName, comprovante.buffer, {
+            contentType: "application/pdf",
+          });
+
+        if (error) {
+          console.error("Erro ao enviar comprovante:", error);
+          return res.status(500).json({ message: "Erro ao enviar comprovante.", details: error.message, });
+        }
+
+        const { data: urlData } = supabase.storage
+          .from("comprovantes-reembolso")
+          .getPublicUrl(fileName);
+
+        if (!urlData.publicUrl) {
+          console.error("Erro ao obter URL pública do comprovante");
+          return res
+            .status(500)
+            .json({ message: "Erro ao obter URL do comprovante." });
+        }
+
+        comprovanteUrl = urlData.publicUrl;
+        console.log("URL pública gerada:", comprovanteUrl);
+      } else {
+        console.log("Nenhum comprovante enviado");
       }
 
       await createSolicitacaoToDB(req.app.get("mysqlPool"), {
@@ -18,7 +60,7 @@ const solicitacaoController = {
         nome,
         categoria,
         valor,
-        comprovante,
+        comprovante: comprovanteUrl,
       });
 
       res.status(201).json({ message: "Solicitação criada com sucesso!" });
@@ -34,7 +76,8 @@ const solicitacaoController = {
     const offset = (pagina - 1) * limite;
     const nomeFiltro = req.query.nome ? `%${req.query.nome}%` : null;
     const idFiltro = req.query.id ? parseInt(req.query.id) : null;
-    const emailFiltro = req.query.email && req.query.email.trim() !== "" ? req.query.email : null;
+    const emailFiltro =
+      req.query.email && req.query.email.trim() !== "" ? req.query.email : null;
 
     if (pagina < 1) {
       return res
@@ -122,18 +165,24 @@ const solicitacaoController = {
 
     try {
       if (!id || isNaN(id) || id <= 0) {
-        return res.status(400).json({ message: "ID da solicitação é inválido!" });
+        return res
+          .status(400)
+          .json({ message: "ID da solicitação é inválido!" });
       }
 
       if (req.user.role !== "admin") {
-        return res.status(403).json({ message: "Apenas administradores podem excluir solicitações!" });
+        return res.status(403).json({
+          message: "Apenas administradores podem excluir solicitações!",
+        });
       }
 
-      await deleteSolicitacaoFromDB(req.app.get('mysqlPool'), {
-        id: id
-      })
+      await deleteSolicitacaoFromDB(req.app.get("mysqlPool"), {
+        id: id,
+      });
 
-      return res.status(200).json({ message: "Solicitação excluída com sucesso!"})
+      return res
+        .status(200)
+        .json({ message: "Solicitação excluída com sucesso!" });
     } catch (error) {
       console.error("Erro ao excluir solicitação:", error.message);
       if (error.message === "Nenhuma solicitação encontrada com esse ID.") {
@@ -141,7 +190,7 @@ const solicitacaoController = {
       }
       res.status(500).json({ message: "Erro ao excluir solicitação." });
     }
-  }
+  },
 };
 
 module.exports = solicitacaoController;

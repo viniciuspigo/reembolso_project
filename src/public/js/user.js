@@ -98,8 +98,8 @@ async function enviarSolicitacao(ev, usuarioLogado) {
   const valorReembolso = parseFloat(
     document.querySelector("#valorReembolso").value
   );
-  const comprovante =
-    fileInput.files.length > 0 ? fileInput.files[0].name : null;
+  const comprovante = fileInput.files.length > 0 ? fileInput.files[0] : null;
+  console.log(comprovante)
   const token = localStorage.getItem("token");
 
   if (categoria === "selecione") {
@@ -110,13 +110,22 @@ async function enviarSolicitacao(ev, usuarioLogado) {
     select.style.borderColor = "";
   }
 
-  const solicitacao = {
+  const formData = new FormData()
+  formData.append("email", usuarioLogado.email)
+  formData.append("nome", nomeSolicitacao)
+  formData.append("categoria", categoria)
+  formData.append("valor", valorReembolso)
+  if (comprovante) {
+    formData.append("comprovante", comprovante)
+  }
+
+  /* const solicitacao = {
     email: usuarioLogado.email,
     nome: nomeSolicitacao,
     categoria: categoria,
     valor: valorReembolso,
     comprovante: comprovante,
-  };
+  }; */
 
   try {
     if (!token) {
@@ -126,10 +135,9 @@ async function enviarSolicitacao(ev, usuarioLogado) {
     const response = await fetch("http://localhost:3000/solicitacoes", {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify(solicitacao),
+      body: formData,
     });
 
     const data = await response.json();
@@ -166,7 +174,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const emailFormatado = usuarioLogado.email.split("@")[0] 
   // Mostrar o nome do user no header
-  document.querySelector("#user-name").textContent = emailFormatado || "Usuário";
+  document.querySelector("#user-name").textContent = emailFormatado ?? "Usuário";
 
   form.addEventListener("submit", (ev) => enviarSolicitacao(ev, usuarioLogado));
 
