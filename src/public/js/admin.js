@@ -3,7 +3,7 @@ let reembolsosAtuais = [];
 // Função que recebe pega as infos da API de reembolso e popula no HTML
 async function loadReembolsos(page = 1, filterName = "") {
   const token = localStorage.getItem("token");
-  
+
   try {
     if (!token) {
       throw new Error("Token não encontrado. Faça login novamente.");
@@ -19,7 +19,7 @@ async function loadReembolsos(page = 1, filterName = "") {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}`,
+        Authorization: `Bearer ${token}`,
       },
     });
 
@@ -131,19 +131,19 @@ async function deleteReembolso() {
           },
         }
       );
-      
+
       const data = await response.json();
 
       if (!response.ok) {
-      if (response.status === 401 || response.status === 403) {
-        localStorage.removeItem("token");
-        localStorage.removeItem("role");
-        window.location.href = "sign-in.html";
-        return;
-      } else {
-        throw new Error(data.message || "Erro ao carregar dados");
+        if (response.status === 401 || response.status === 403) {
+          localStorage.removeItem("token");
+          localStorage.removeItem("role");
+          window.location.href = "sign-in.html";
+          return;
+        } else {
+          throw new Error(data.message || "Erro ao carregar dados");
+        }
       }
-    }
 
       /* const data = response.json();
       alert(data.message) */
@@ -153,7 +153,7 @@ async function deleteReembolso() {
       refundPanel.style.width = "1082px";
     } catch (error) {
       console.error("Erro ao deletar reembolso:", error.message);
-      console.log(error, error.message)
+      console.log(error, error.message);
       alert("Erro ao deletar o reembolso!");
     }
   } else {
@@ -187,22 +187,22 @@ function verifyUser() {
 
   if (!token || !role) {
     window.location.href = "sign-in.html";
-    return null
+    return null;
   }
 
   if (role !== "admin") {
     window.location.href = role === "user" ? "user.html" : "admin.html";
-    return null
+    return null;
   }
 
-  return { token, role }
+  return { token, role };
 }
 
 // Configuração do btn de logout
 function configLogout() {
   document.querySelector(".logout-btn").addEventListener("click", () => {
     localStorage.removeItem("token");
-    localStorage.removeItem("role")
+    localStorage.removeItem("role");
     setTimeout(() => {
       window.location.href = "sign-in.html";
     }, 150);
@@ -211,18 +211,33 @@ function configLogout() {
 
 // DETALHES DO REEMBOLSO
 function configItensDetails() {
+  let comprovanteAtual = null;
   const refundInformation = document.querySelector(".refund-item-information");
   const refundContent = document.querySelector(".refund-content");
   const refundPanel = document.querySelector(".refund-panel");
   const nomeSolicitacaoInput = document.querySelector("#nomeSolicitacao");
   const categoriaInput = document.querySelector("#categoriaSelect");
   const valorInput = document.querySelector("#valorReembolso");
+  const comprovanteBtn = document.querySelector(".comprovante-btn");
+
+  // Adicionado o "onclick" ao invés do eventlistener para os events não ficarem tudo acumulado gerando erros
+  comprovanteBtn.onclick = () => {
+    if (
+      comprovanteAtual === undefined ||
+      comprovanteAtual === null ||
+      !comprovanteAtual.startsWith("https://")
+    ) {
+      alert("Essa solicitação não tem comprovante");
+    } else {
+      window.open(comprovanteAtual, "_blank");
+    }
+  };
 
   document.querySelectorAll(".order-item").forEach((item) => {
     item.addEventListener("click", () => {
       const index = parseInt(item.dataset.index, 10);
       const reembolso = reembolsosAtuais[index];
-      /* console.log(reembolsosAtuais); */
+      /* console.log(reembolsosAtuais[index].comprovante); */
       if (reembolso) {
         nomeSolicitacaoInput.value = reembolso.nome;
         categoriaInput.value = reembolso.categoria;
@@ -232,6 +247,7 @@ function configItensDetails() {
         refundInformation.style.display = "flex";
         refundContent.style.display = "none";
         refundPanel.style.width = "512px";
+        comprovanteAtual = reembolso.comprovante;
       } else {
         console.error("Reembolso não encontrado para o índice:", index);
       }
@@ -289,11 +305,15 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // Pesquisa pelo nome que o usuário digitou no input
-  document.querySelector(".refund-filter input").addEventListener("keypress", (ev) => {
+  document
+    .querySelector(".refund-filter input")
+    .addEventListener("keypress", (ev) => {
       if (ev.key === "Enter") {
         searchByName();
       }
     });
 
-  document.querySelector(".refund-filter button").addEventListener("click", searchByName);
+  document
+    .querySelector(".refund-filter button")
+    .addEventListener("click", searchByName);
 });

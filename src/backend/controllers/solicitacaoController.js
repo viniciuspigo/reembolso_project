@@ -15,9 +15,7 @@ const solicitacaoController = {
       }
 
       if (req.user.role !== "user") {
-        return res
-          .status(401)
-          .json({ message: "Apenas usuários podem criar uma solicitacação." });
+        return res.status(401).json({ message: "Apenas usuários podem criar uma solicitacação." });
       }
 
       if (comprovante && comprovante.mimetype !== "application/pdf") {
@@ -38,15 +36,11 @@ const solicitacaoController = {
           return res.status(500).json({ message: "Erro ao enviar comprovante.", details: error.message, });
         }
 
-        const { data: urlData } = supabase.storage
-          .from("comprovantes-reembolso")
-          .getPublicUrl(fileName);
+        const { data: urlData } = supabase.storage.from("comprovantes-reembolso").getPublicUrl(fileName);
 
         if (!urlData.publicUrl) {
           console.error("Erro ao obter URL pública do comprovante");
-          return res
-            .status(500)
-            .json({ message: "Erro ao obter URL do comprovante." });
+          return res.status(500).json({ message: "Erro ao obter URL do comprovante." });
         }
 
         comprovanteUrl = urlData.publicUrl;
