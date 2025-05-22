@@ -1,17 +1,17 @@
 module.exports = {
-  async createUser(mysqlPool, { nome_completo, email, senha, role }) {
+  async createUser(pgPool, { nome_completo, email, senha, role }) {
     const query = `
       INSERT INTO usuario (nome_completo, email, senha, role, data_criacao)
-      VALUES (?, ?, ?, ?, NOW())
+      VALUES ($1, $2, $3, $4, CURRENT_TIMESTAMP)
     `;
-    await mysqlPool.execute(query, [nome_completo, email, senha, role]);
+    await pgPool.query(query, [nome_completo, email, senha, role]);
   },
 
-  async findUserByEmail(mysqlPool, email) {
-    const [rows] = await mysqlPool.execute(
-      "SELECT * FROM usuario WHERE email = ?",
+  async findUserByEmail(pgPool, email) {
+    const result = await pgPool.query(
+      "SELECT * FROM usuario WHERE email = $1",
       [email]
     );
-    return rows[0];
+    return result.rows[0];
   },
 };

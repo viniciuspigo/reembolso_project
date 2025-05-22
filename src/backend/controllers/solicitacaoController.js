@@ -1,10 +1,9 @@
-const { supabase } = require("../config/supabase");
+const { supabase, pgPool } = require("../config/supabase");
 const { createSolicitacaoToDB, deleteSolicitacaoFromDB } = require("../models/solicitacao");
 
 const solicitacaoController = {
   async createSolicitacao(req, res) {
     try {
-
       const { email, nome, categoria, valor } = req.body;
       const comprovante = req.file;
 
@@ -22,8 +21,8 @@ const solicitacaoController = {
         return res.status(400).json({ message: "O arquivo de comprovante deve ser um PDF." });}
 
       let comprovanteUrl = null;
+      // Upload para o Bucket do Supabase
       if (comprovante) {
-        // Upload para o Supabase
         const fileName = `comprovantes-reembolso/${Date.now()}_${comprovante.originalname}`;
         console.log("Fazendo upload para Supabase:", fileName);
         const { data, error } = await supabase.storage.from("comprovantes-reembolso")
@@ -36,6 +35,7 @@ const solicitacaoController = {
           return res.status(500).json({ message: "Erro ao enviar comprovante.", details: error.message, });
         }
 
+        // Pegando a URL pública do Bucket
         const { data: urlData } = supabase.storage.from("comprovantes-reembolso").getPublicUrl(fileName);
 
         if (!urlData.publicUrl) {
@@ -49,7 +49,8 @@ const solicitacaoController = {
         console.log("Nenhum comprovante enviado");
       }
 
-      await createSolicitacaoToDB(req.app.get("mysqlPool"), {
+      // Criando a Solicitação
+      await createSolicitacaoToDB(pgPool, {
         email,
         nome,
         categoria,
@@ -92,15 +93,15 @@ const solicitacaoController = {
       let whereClauses = [];
 
       if (idFiltro !== null) {
-        whereClauses.push("id = ?");
+        whereClauses.push("id = $1");
         countParams.push(idFiltro);
       }
       if (emailFiltro !== null) {
-        whereClauses.push("email = ?");
+        whereClauses.push("email = $" + (countParams.length + 1));
         countParams.push(emailFiltro);
       }
       if (nomeFiltro !== null) {
-        whereClauses.push("nome LIKE ?");
+        whereClauses.push("nome ILIKE $" + (countParams.length + 1));
         countParams.push(nomeFiltro);
       }
 
@@ -108,10 +109,8 @@ const solicitacaoController = {
         countQuery += ` WHERE ${whereClauses.join(" AND ")}`;
       }
 
-      const [countResult] = await req.app
-        .get("mysqlPool")
-        .execute(countQuery, countParams);
-      const totalRegistros = countResult[0].total;
+      const { rows: countRows } = await pgPool.query(countQuery, countParams);
+      const totalRegistros = countRows[0].total
       const totalPaginas = Math.ceil(totalRegistros / limite);
 
       // Monta a query de seleção
@@ -120,15 +119,15 @@ const solicitacaoController = {
       let selectWhereClauses = [];
 
       if (idFiltro !== null) {
-        selectWhereClauses.push("id = ?");
+        selectWhereClauses.push("id = $1");
         selectParams.push(idFiltro);
       }
       if (emailFiltro !== null) {
-        selectWhereClauses.push("email = ?");
+        selectWhereClauses.push("email = $" + (selectParams.length + 1));
         selectParams.push(emailFiltro);
       }
       if (nomeFiltro !== null) {
-        selectWhereClauses.push("nome LIKE ?");
+        selectWhereClauses.push("nome ILIKE $" + (selectParams.length + 1));
         selectParams.push(nomeFiltro);
       }
 
@@ -136,11 +135,10 @@ const solicitacaoController = {
         selectQuery += ` WHERE ${selectWhereClauses.join(" AND ")}`;
       }
 
-      selectQuery += ` LIMIT ${limite} OFFSET ${offset}`; // Concatenar diretamente
+      selectQuery += ` ORDER BY id DESC LIMIT $${selectParams.length + 1} OFFSET $${selectParams.length + 2}`;
+      selectParams.push(limite, offset);
 
-      const [rows] = await req.app
-        .get("mysqlPool")
-        .execute(selectQuery, selectParams);
+      const { rows } = await pgPool.query(selectQuery, selectParams);
 
       res.status(200).json({
         paginaAtual: pagina,
@@ -170,7 +168,8 @@ const solicitacaoController = {
         });
       }
 
-      await deleteSolicitacaoFromDB(req.app.get("mysqlPool"), {
+      // Deletando a Solicitação de um ID específico
+      await deleteSolicitacaoFromDB(pgPool, {
         id: id,
       });
 

@@ -114,51 +114,62 @@ async function deleteReembolso() {
     return;
   }
 
-  const confirmation = confirm(
-    `Tem certeza que deseja deletar o reembolso ${reembolsoId}?`
-  );
+  Swal.fire({
+    title: "Tem certeza?",
+    text: `Você deseja deletar o reembolso ${reembolsoId}?`,
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#d33",
+    cancelButtonColor: "#3085d6",
+    confirmButtonText: "Deletar!",
+    cancelButtonText: "Cancelar",
+  }).then(async (result) => {
+    if (result.isConfirmed) {
+      try {
+        const response = await fetch(
+          `http://localhost:3000/solicitacoes/${reembolsoId}`,
+          {
+            method: "DELETE",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
 
-  // Por enquanto a validação está utilizando somente o confirm
-  if (confirmation) {
-    try {
-      const response = await fetch(
-        `http://localhost:3000/solicitacoes/${reembolsoId}`,
-        {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
+        const data = await response.json();
+
+        if (!response.ok) {
+          if (response.status === 401 || response.status === 403) {
+            localStorage.removeItem("token");
+            localStorage.removeItem("role");
+            window.location.href = "sign-in.html";
+            return;
+          } else {
+            throw new Error(data.message || "Erro ao carregar dados");
+          }
         }
-      );
 
-      const data = await response.json();
+        await Swal.fire(
+          "Excluído!",
+          "O reembolso foi deletado com sucesso.",
+          "success"
+        );
 
-      if (!response.ok) {
-        if (response.status === 401 || response.status === 403) {
-          localStorage.removeItem("token");
-          localStorage.removeItem("role");
-          window.location.href = "sign-in.html";
-          return;
-        } else {
-          throw new Error(data.message || "Erro ao carregar dados");
-        }
+        loadReembolsos(1);
+        refundInformation.style.display = "none";
+        refundContent.style.display = "flex";
+        refundPanel.style.width = "1082px";
+      } catch (error) {
+        console.error("Erro ao deletar reembolso:", error.message);
+        Swal.fire(
+          "Erro!",
+          `Houve um problema ao tentar deletar o reembolso. ${error.message}`,
+          "error"
+        );
       }
-
-      /* const data = response.json();
-      alert(data.message) */
-      loadReembolsos(1);
-      refundInformation.style.display = "none";
-      refundContent.style.display = "flex";
-      refundPanel.style.width = "1082px";
-    } catch (error) {
-      console.error("Erro ao deletar reembolso:", error.message);
-      console.log(error, error.message);
-      alert("Erro ao deletar o reembolso!");
     }
-  } else {
-    return;
-  }
+  });
 }
 
 // Função que atualiza no html a paginação (Numero de paginas)
@@ -227,7 +238,11 @@ function configItensDetails() {
       comprovanteAtual === null ||
       !comprovanteAtual.startsWith("https://")
     ) {
-      alert("Essa solicitação não tem comprovante");
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Essa solicitação não possuí um comprovante vinculado.",
+      });
     } else {
       window.open(comprovanteAtual, "_blank");
     }
