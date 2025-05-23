@@ -1,11 +1,16 @@
 const { supabase, pgPool } = require("../config/supabase");
-const { createSolicitacaoToDB, deleteSolicitacaoFromDB } = require("../models/solicitacao");
+const {
+  createSolicitacaoToDB,
+  deleteSolicitacaoFromDB,
+  getSolicitacaoFromDB,
+} = require("../models/solicitacao");
 
 const solicitacaoController = {
   async createSolicitacao(req, res) {
     try {
       const { email, nome, categoria, valor } = req.body;
       const comprovante = req.file;
+      const comprovante_nome = `${comprovante?.originalname}_${Date.now()}`;
 
       if (!email || !nome || !categoria || !valor) {
         return res
@@ -14,33 +19,46 @@ const solicitacaoController = {
       }
 
       if (req.user.role !== "user") {
-        return res.status(401).json({ message: "Apenas usuários podem criar uma solicitacação." });
+        return res
+          .status(401)
+          .json({ message: "Apenas usuários podem criar uma solicitacação." });
       }
 
       if (comprovante && comprovante.mimetype !== "application/pdf") {
-        return res.status(400).json({ message: "O arquivo de comprovante deve ser um PDF." });}
+        return res
+          .status(400)
+          .json({ message: "O arquivo de comprovante deve ser um PDF." });
+      }
 
       let comprovanteUrl = null;
       // Upload para o Bucket do Supabase
       if (comprovante) {
-        const fileName = `comprovantes-reembolso/${Date.now()}_${comprovante.originalname}`;
+        const fileName = `comprovantes-reembolso/${comprovante_nome}`;
         console.log("Fazendo upload para Supabase:", fileName);
-        const { data, error } = await supabase.storage.from("comprovantes-reembolso")
-        .upload(fileName, comprovante.buffer, {
+        const { data, error } = await supabase.storage
+          .from("comprovantes-reembolso")
+          .upload(fileName, comprovante.buffer, {
             contentType: "application/pdf",
           });
 
         if (error) {
           console.error("Erro ao enviar comprovante:", error);
-          return res.status(500).json({ message: "Erro ao enviar comprovante.", details: error.message, });
+          return res.status(500).json({
+            message: "Erro ao enviar comprovante.",
+            details: error.message,
+          });
         }
 
         // Pegando a URL pública do Bucket
-        const { data: urlData } = supabase.storage.from("comprovantes-reembolso").getPublicUrl(fileName);
+        const { data: urlData } = supabase.storage
+          .from("comprovantes-reembolso")
+          .getPublicUrl(fileName);
 
         if (!urlData.publicUrl) {
           console.error("Erro ao obter URL pública do comprovante");
-          return res.status(500).json({ message: "Erro ao obter URL do comprovante." });
+          return res
+            .status(500)
+            .json({ message: "Erro ao obter URL do comprovante." });
         }
 
         comprovanteUrl = urlData.publicUrl;
@@ -55,7 +73,8 @@ const solicitacaoController = {
         nome,
         categoria,
         valor,
-        comprovante: comprovanteUrl,
+        comprovante_url: comprovanteUrl,
+        comprovante_nome: comprovante_nome,
       });
 
       res.status(201).json({ message: "Solicitação criada com sucesso!" });
@@ -110,7 +129,7 @@ const solicitacaoController = {
       }
 
       const { rows: countRows } = await pgPool.query(countQuery, countParams);
-      const totalRegistros = countRows[0].total
+      const totalRegistros = countRows[0].total;
       const totalPaginas = Math.ceil(totalRegistros / limite);
 
       // Monta a query de seleção
@@ -135,7 +154,9 @@ const solicitacaoController = {
         selectQuery += ` WHERE ${selectWhereClauses.join(" AND ")}`;
       }
 
-      selectQuery += ` ORDER BY id DESC LIMIT $${selectParams.length + 1} OFFSET $${selectParams.length + 2}`;
+      selectQuery += ` ORDER BY id DESC LIMIT $${
+        selectParams.length + 1
+      } OFFSET $${selectParams.length + 2}`;
       selectParams.push(limite, offset);
 
       const { rows } = await pgPool.query(selectQuery, selectParams);
@@ -155,17 +176,48 @@ const solicitacaoController = {
   async deleteSolicitacao(req, res) {
     const id = parseInt(req.params.id, 10);
 
+    if (!id || isNaN(id) || id <= 0) {
+      return res.status(400).json({ message: "ID da solicitação é inválido!" });
+    }
+
+    if (req.user.role !== "admin") {
+      return res.status(403).json({
+        message: "Apenas administradores podem excluir solicitações!",
+      });
+    }
+
     try {
-      if (!id || isNaN(id) || id <= 0) {
-        return res
-          .status(400)
-          .json({ message: "ID da solicitação é inválido!" });
+      // Buscando a solicitação pelo id
+      const reembolso = await getSolicitacaoFromDB(pgPool, {
+        id: id,
+      });
+
+      if (!reembolso) {
+        return res.status(204).json({ message: "Solicitação não encontrada!" });
       }
 
-      if (req.user.role !== "admin") {
-        return res.status(403).json({
-          message: "Apenas administradores podem excluir solicitações!",
-        });
+      // Verificando se o nome do pdf existe, se existir apaga o doc do Storage
+      if (reembolso.comprovante_nome) {
+        const fileName = `comprovantes-reembolso/${reembolso.comprovante_nome}`;
+        console.log(
+          "Realizando exclusão do documento via Supabase Storage",
+          fileName
+        );
+        const { data, error } = await supabase.storage
+          .from("comprovantes-reembolso")
+          .remove([fileName]);
+
+        if (error) {
+          console.error(
+            "Erro ao excluir Documento do Supabase Storage",
+            error.message
+          );
+        } else {
+          console.log(
+            "Documento excluído com sucesso do Supabase Storage",
+            fileName
+          );
+        }
       }
 
       // Deletando a Solicitação de um ID específico

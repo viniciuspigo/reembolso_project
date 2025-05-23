@@ -69,7 +69,7 @@ async function loadReembolsos(page = 1, filterName = "") {
           iconePath = "./assets/images/order_img/outros.svg";
       }
 
-      const valorFormatado = new Intl.NumberFormat("pt-BR", {
+      const formatedValue = new Intl.NumberFormat("pt-BR", {
         style: "currency",
         currency: "BRL",
       })
@@ -87,7 +87,7 @@ async function loadReembolsos(page = 1, filterName = "") {
         </div>
         <div class="right-content">
           <span>R$</span>
-          <p>${valorFormatado}</p>
+          <p>${formatedValue}</p>
         </div>
       `;
 
@@ -160,17 +160,7 @@ async function deleteReembolso() {
         refundInformation.style.display = "none";
         refundContent.style.display = "flex";
         refundPanel.style.width = "1082px";
-      } catch (error) {
-        console.error("Erro ao deletar reembolso:", error.message);
-        Swal.fire(
-          "Erro!",
-          `Houve um problema ao tentar deletar o reembolso. ${error.message}`,
-          "error"
-        );
-      }
-    }
-  });
-}
+
 
 // Função que atualiza no html a paginação (Numero de paginas)
 function updatePages(page, totalPages) {
@@ -262,7 +252,7 @@ function configItensDetails() {
         refundInformation.style.display = "flex";
         refundContent.style.display = "none";
         refundPanel.style.width = "512px";
-        comprovanteAtual = reembolso.comprovante;
+        comprovanteAtual = reembolso.comprovante_url;
       } else {
         console.error("Reembolso não encontrado para o índice:", index);
       }
