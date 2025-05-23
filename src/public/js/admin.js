@@ -161,6 +161,28 @@ async function deleteReembolso() {
         refundContent.style.display = "flex";
         refundPanel.style.width = "1082px";
 
+        // Configuração da Notificação pós exclussão de documentos.
+        const notyf = new Notyf({
+          duration: 3500,
+          ripple: true,
+          dismissible: true,
+          position: {
+            x: "right",
+            y: "top",
+          },
+        });
+        notyf.success(" Reembolso removido com sucesso.");
+      } catch (error) {
+        console.error("Erro ao deletar reembolso:", error.message);
+        Swal.fire(
+          "Erro!",
+          `Houve um problema ao tentar deletar o reembolso. ${error.message}`,
+          "error"
+        );
+      }
+    }
+  });
+}
 
 // Função que atualiza no html a paginação (Numero de paginas)
 function updatePages(page, totalPages) {
