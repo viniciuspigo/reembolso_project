@@ -54,23 +54,44 @@ async function login(ev) {
   }
 }
 
-function recoveryPassword() {
-  document
-    .querySelector("#password-recovery")
-    .addEventListener("click", async (ev) => {
-      ev.preventDefault()
-      const { value: email } = await Swal.fire({
-        width: "40em",
-        title: "Recuperar senha",
-        input: "email",
-        inputLabel: "Informe o e-mail cadastrado para receber o link de redefinição de senha.",
-        inputPlaceholder: "Seu e-mail",
-      });
-      if (email) {
-        Swal.fire(`Entered email: ${email}`);
+async function recoveryPassword(ev) {
+  ev.preventDefault();
+
+  const { value: email } = await Swal.fire({
+    width: "40em",
+    title: "Recuperar senha",
+    input: "email",
+    inputLabel:
+      "Informe o e-mail cadastrado para receber o link de redefinição de senha.",
+    inputPlaceholder: "Seu e-mail",
+  });
+
+  try {
+    const response = await fetch(
+      "http://localhost:3000/password/password-recovery",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email }),
       }
-    });
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      data.message || "Erro ao recuperar senha";
+    }
+
+    console.log(data.message)
+  } catch (error) {
+    showMessage(error.message, "red");
+    console.error("Erro ao tentar recuperar senha:", error);
+  }
 }
 
-recoveryPassword();
+document
+  .querySelector("#password-recovery")
+  .addEventListener("click", recoveryPassword);
 document.querySelector(".form-sign-in").addEventListener("submit", login);

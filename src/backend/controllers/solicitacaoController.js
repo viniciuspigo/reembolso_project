@@ -2,8 +2,7 @@ const { supabase, pgPool } = require("../config/supabase");
 const {
   createSolicitacaoToDB,
   deleteSolicitacaoFromDB,
-  getSolicitacaoFromDB,
-} = require("../models/solicitacao");
+  getSolicitacaoFromDB,} = require("../models/solicitacao");
 
 const solicitacaoController = {
   async createSolicitacao(req, res) {

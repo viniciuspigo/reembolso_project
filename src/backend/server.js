@@ -29,9 +29,11 @@ app.use(
 // Carregar rotas
 const solicitacaoRoutes = require("./routes/solicitacoes");
 const usuarioRoutes = require("./routes/usuarios");
+const passwordRoutes = require("./routes/password")
 
 app.use("/solicitacoes", solicitacaoRoutes);
 app.use("/usuarios", usuarioRoutes);
+app.use("/password", passwordRoutes);
 
 // Iniciar o servidor
 app.listen(PORT, () => {
