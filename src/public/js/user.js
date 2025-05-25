@@ -157,6 +157,7 @@ async function enviarSolicitacao(ev, usuarioLogado) {
     confirmationSection.style.display = "block";
   } catch (error) {
     showMessage(error.message, "red");
+    console.error(error.message, error.stack)
   }
 }
 

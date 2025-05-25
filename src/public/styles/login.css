@@ -41,10 +41,10 @@
           border-radius: 8px;
           padding-left: 16px;
           height: 48px;
-          outline: none;
-          transition: 0.3s;
           font-size: 14px;
           color: var(--color-gray-100);
+          outline: none;
+          transition: 0.3s;
         }
 
         & input:focus {
@@ -87,12 +87,30 @@
       text-align: center;
 
       & button {
-        background-color: transparent;
+        width: 100%;
         border: none;
+        background-color: var(--color-gray-400);
+        color: var(--color-black);
         font-size: 14px;
-        font-weight: 500;
+        font-weight: bold;
+        padding: 15px 20px;
+        border-radius: 8px;
         cursor: pointer;
+        transition: 0.3s;
       }
+
+      & button:hover {
+        background-color: var(--color-gray-300);
+      }
+    }
+
+    & #password-recovery {
+      text-decoration: none;
+      color: var(--color-black);
+    }
+
+    & #password-recovery:hover {
+      text-decoration: underline;
     }
   }
 }

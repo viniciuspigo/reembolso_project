@@ -1,13 +1,13 @@
 // Função para mostrar mensagem de erro ou algum aviso
 function showMessage(text, color) {
-    const message = document.querySelector(".message");
-    message.style.display = "block";
-    message.style.color = color;
-    message.innerText = text;
-    setTimeout(() => {
-      message.style.display = "none";
-    }, 5000);
-  }
+  const message = document.querySelector(".message");
+  message.style.display = "block";
+  message.style.color = color;
+  message.innerText = text;
+  setTimeout(() => {
+    message.style.display = "none";
+  }, 5000);
+}
 
 async function login(ev) {
   ev.preventDefault();
@@ -37,10 +37,10 @@ async function login(ev) {
     const data = await response.json();
     showMessage(data.message, "green");
 
-    // Salvar o usuário logado no localStorage (opcional, para uso nas páginas user.html/admin.html)
-    localStorage.setItem("token", data.token)
-    localStorage.setItem("role", data.role)
-    console.log(data.token, data.role)
+    // Salvar o usuário logado no localStorage
+    localStorage.setItem("token", data.token);
+    localStorage.setItem("role", data.role);
+    console.log(data.token, data.role);
 
     // Redirecionar com base na role
     if (data.role === "user") {
@@ -54,4 +54,23 @@ async function login(ev) {
   }
 }
 
+function recoveryPassword() {
+  document
+    .querySelector("#password-recovery")
+    .addEventListener("click", async (ev) => {
+      ev.preventDefault()
+      const { value: email } = await Swal.fire({
+        width: "40em",
+        title: "Recuperar senha",
+        input: "email",
+        inputLabel: "Informe o e-mail cadastrado para receber o link de redefinição de senha.",
+        inputPlaceholder: "Seu e-mail",
+      });
+      if (email) {
+        Swal.fire(`Entered email: ${email}`);
+      }
+    });
+}
+
+recoveryPassword();
 document.querySelector(".form-sign-in").addEventListener("submit", login);
