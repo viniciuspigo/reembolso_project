@@ -19,7 +19,7 @@ function clearInputs() {
 
 // Função para validar a senha
 function validatePassword(password) {
-  const regex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
+  const regex = /^(?=.*[A-Za-z])(?=.*\d).{8,}$/;
   return regex.test(password);
 }
 

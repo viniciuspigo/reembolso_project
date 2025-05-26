@@ -1,10 +1,11 @@
 module.exports = {
   async createSolicitacaoToDB(pgPool, { email, nome, categoria, valor, comprovante_url, comprovante_nome }) {
+    const data_criacao = new Date(Date.now())
     const query = `
       INSERT INTO solicitacao (email, nome, categoria, valor, comprovante_url, comprovante_nome, data_criacao)
-      VALUES ($1, $2, $3, $4, $5, $6, CURRENT_TIMESTAMP)
+      VALUES ($1, $2, $3, $4, $5, $6, $7)
     `;
-    await pgPool.query(query, [email, nome, categoria, valor, comprovante_url, comprovante_nome]);
+    await pgPool.query(query, [email, nome, categoria, valor, comprovante_url, comprovante_nome, data_criacao]);
   },
 
   async deleteSolicitacaoFromDB(pgPool, { id }) {

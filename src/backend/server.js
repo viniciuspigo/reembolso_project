@@ -29,13 +29,16 @@ app.use(
 // Carregar rotas
 const solicitacaoRoutes = require("./routes/solicitacoes");
 const usuarioRoutes = require("./routes/usuarios");
-const passwordRoutes = require("./routes/password")
+const passwordRoutes = require("./routes/password");
 
 app.use("/solicitacoes", solicitacaoRoutes);
 app.use("/usuarios", usuarioRoutes);
 app.use("/password", passwordRoutes);
 
-// Iniciar o servidor
+app.get("/reset-password", (req, res) => {
+  res.sendFile(path.join(__dirname, "../public", "reset-password.html"));
+});
+
 app.listen(PORT, () => {
   console.log(`Servidor rodando na porta ${PORT}`);
 });

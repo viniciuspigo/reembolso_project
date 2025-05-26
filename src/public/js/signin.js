@@ -54,6 +54,7 @@ async function login(ev) {
   }
 }
 
+// Função para enviar o e-mail do password recovery
 async function recoveryPassword(ev) {
   ev.preventDefault();
 
@@ -68,8 +69,7 @@ async function recoveryPassword(ev) {
 
   try {
     const response = await fetch(
-      "http://localhost:3000/password/password-recovery",
-      {
+      "http://localhost:3000/password/password-recovery", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -81,17 +81,14 @@ async function recoveryPassword(ev) {
     const data = await response.json();
 
     if (!response.ok) {
-      data.message || "Erro ao recuperar senha";
+      showMessage("Erro ao recuperar senha:" + data.message, "red")
     }
 
-    console.log(data.message)
+    alert(data.message)
   } catch (error) {
-    showMessage(error.message, "red");
-    console.error("Erro ao tentar recuperar senha:", error);
+    showMessage("Erro ao tentar recuperar senha: ", error);
   }
 }
 
-document
-  .querySelector("#password-recovery")
-  .addEventListener("click", recoveryPassword);
+document.querySelector("#password-recovery").addEventListener("click", recoveryPassword);
 document.querySelector(".form-sign-in").addEventListener("submit", login);

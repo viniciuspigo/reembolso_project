@@ -11,23 +11,84 @@ function showMessage(text, color) {
 
 // Função para validar a senha
 function validatePassword(password) {
-  const regex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
+  const regex = /^(?=.*[A-Za-z])(?=.*\d).{8,}$/;
   return regex.test(password);
 }
 
-document.querySelector("#update-password-btn").addEventListener("click", (ev) => {
-    ev.preventDefault();
+// Função para validar a senha passada e dar update no db do supabase
+async function updatePassword(ev) {
+  ev.preventDefault();
 
-    const newPassord = document.querySelector("#newPassword").value;
-    const newPasswordConfirmation = document.querySelector(
-      "#newPasswordConfirmation"
-    ).value;
+  const newPassword = document.querySelector("#newPassword").value.trim();
+  const newPasswordConfirmation = document.querySelector("#newPasswordConfirmation").value.trim();
+  const urlParams = new URLSearchParams(window.location.search);
+  const token = urlParams.get("token");
 
-    if (!validatePassword(newPassord)) {
-        showMessage("A senha deve ter no mínimo 8 caracteres e conter letra e números.", "red")
+  if (!token) {
+    showMessage("Token inválido ou ausente.", "red");
+    setTimeout(() => {
+      window.location.href = "http://localhost:3000/sign-in";
+    }, 1500);
+    return;
+  }
+
+  if (!validatePassword(newPassword)) {
+    showMessage(
+      "A senha deve ter no mínimo 8 caracteres e conter letra e números.",
+      "red"
+    );
+    return;
+  }
+
+  if (newPassword !== newPasswordConfirmation) {
+    showMessage("As senhas não coincidem!", "red");
+    return;
+  }
+
+  try {
+    const response = await fetch(
+      "http://localhost:3000/password/reset-password",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ token, newPassword }),
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      showMessage(`Erro: ${data.message}`, "red");
+      setTimeout(() => {
+        window.location.href = "sign-in.html";
+      }, 1500);
+      return;
     }
 
-    if (newPassord !== newPasswordConfirmation) {
-        showMessage("As senhas não coincidem!", "red")
-    }
-  });
+    showMessage(
+      "Senha atualizada com sucesso! Redirecionando para o login...",
+      "green"
+    );
+    setTimeout(() => {
+      window.location.href = "sign-in.html";
+    }, 1500);
+  } catch (error) {
+    showMessage(`Erro ao redefinir senha: ${error.message}`, "red");
+    console.error(error.message);
+  }
+}
+
+document.querySelector("#update-password-btn").addEventListener("click", updatePassword);
+document.addEventListener("DOMContentLoaded", () => {
+  const urlParams = new URLSearchParams(window.location.search);
+  const token = urlParams.get("token");
+
+  if (!token) {
+    alert("Token inválido ou ausente.");
+    setTimeout(() => {
+      window.location.href = "sign-in.html";
+    }, 1500);
+  }
+});
