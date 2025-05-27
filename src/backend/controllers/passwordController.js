@@ -17,7 +17,7 @@ const passwordController = {
       const existingUser = await findUserByEmail(pgPool, email);
 
       if (!existingUser) {
-        return res.status(404).json({ message: "Email não encontrado" });
+        return res.status(404).json({ message: "Email não encontrado." });
       }
 
       const { token, data_expiracao } = await createResetToken(
@@ -70,9 +70,8 @@ const passwordController = {
       });
 
       if (emailError) {
-        return res
-          .status(500)
-          .json({ message: "Erro ao enviar email", error: emailError });
+        console.log(emailError.message)
+        return res.status(500).json({ message: "Erro ao enviar email", error: emailError });
       }
 
       return res.status(200).json({

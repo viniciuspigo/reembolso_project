@@ -116,6 +116,10 @@
 }
 
 @media (max-width: 500px) {
+  body {
+    overflow: visible;
+  }
+
   .form-sign-in,
   .form-sign-up {
     padding: 20px;

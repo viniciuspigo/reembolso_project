@@ -69,7 +69,8 @@ async function recoveryPassword(ev) {
 
   try {
     const response = await fetch(
-      "http://localhost:3000/password/password-recovery", {
+      "http://localhost:3000/password/password-recovery",
+      {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -81,14 +82,19 @@ async function recoveryPassword(ev) {
     const data = await response.json();
 
     if (!response.ok) {
-      showMessage("Erro ao recuperar senha:" + data.message, "red")
+      showMessage("Erro ao recuperar senha:" + data.message, "red");
     }
-
-    alert(data.message)
+    Swal.fire({
+      icon: "error",
+      title: "Oops...",
+      text: `${data.message}`,
+    });
   } catch (error) {
     showMessage("Erro ao tentar recuperar senha: ", error);
   }
 }
 
-document.querySelector("#password-recovery").addEventListener("click", recoveryPassword);
+document
+  .querySelector("#password-recovery")
+  .addEventListener("click", recoveryPassword);
 document.querySelector(".form-sign-in").addEventListener("submit", login);
