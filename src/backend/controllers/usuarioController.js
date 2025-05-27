@@ -50,7 +50,7 @@ const usuarioController = {
 
       if (existingAdmin) {
         console.log("Admin já existe.");
-        return res.status(400).json({ message: "Usuário admin já existe." });
+        return res.status(400).json({ message: "Usuário admin já existe." }); 
       }
 
       // "Criptografia" da senha
