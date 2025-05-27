@@ -2,7 +2,8 @@ const { supabase, pgPool } = require("../config/supabase");
 const {
   createSolicitacaoToDB,
   deleteSolicitacaoFromDB,
-  getSolicitacaoFromDB,} = require("../models/solicitacao");
+  getSolicitacaoFromDB,
+} = require("../models/solicitacao");
 
 const solicitacaoController = {
   async createSolicitacao(req, res) {
@@ -48,20 +49,20 @@ const solicitacaoController = {
           });
         }
 
-        // Pegando a URL pública do Bucket
-        const { data: urlData } = supabase.storage
+        // Pegando a URL privada e personalizada do Bucket
+        const { data: urlData } = await supabase.storage
           .from("comprovantes-reembolso")
-          .getPublicUrl(fileName);
+          .createSignedUrl(fileName, 60 * 60 * 24 * 365);
 
-        if (!urlData.publicUrl) {
-          console.error("Erro ao obter URL pública do comprovante");
+        if (!urlData.signedUrl) {
+          console.error("Erro ao obter URL do comprovante");
           return res
             .status(500)
             .json({ message: "Erro ao obter URL do comprovante." });
         }
 
-        comprovanteUrl = urlData.publicUrl;
-        console.log("URL pública gerada:", comprovanteUrl);
+        comprovanteUrl = urlData.signedUrl;
+        console.log("URL gerada:", comprovanteUrl);
       } else {
         console.log("Nenhum comprovante enviado");
       }
@@ -207,10 +208,12 @@ const solicitacaoController = {
           .remove([fileName]);
 
         if (error) {
-          console.error(
-            "Erro ao excluir Documento do Supabase Storage",
-            error.message
-          );
+          return res
+            .status(500)
+            .json({
+              message: "Erro ao excluir Documento do Supabase Storage",
+              error: error.message,
+            });
         } else {
           console.log(
             "Documento excluído com sucesso do Supabase Storage",
@@ -228,7 +231,6 @@ const solicitacaoController = {
         .status(200)
         .json({ message: "Solicitação excluída com sucesso!" });
     } catch (error) {
-      console.error("Erro ao excluir solicitação:", error.message);
       if (error.message === "Nenhuma solicitação encontrada com esse ID.") {
         return res.status(404).json({ message: error.message });
       }
