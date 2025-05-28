@@ -70,8 +70,9 @@ const passwordController = {
       });
 
       if (emailError) {
-        console.log(emailError.message)
-        return res.status(500).json({ message: "Erro ao enviar email", error: emailError });
+        return res
+          .status(500)
+          .json({ message: "Erro ao enviar email", error: emailError });
       }
 
       return res.status(200).json({
