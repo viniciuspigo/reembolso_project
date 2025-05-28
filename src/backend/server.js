@@ -39,6 +39,8 @@ app.get("/reset-password", (req, res) => {
   res.sendFile(path.join(__dirname, "../public", "reset-password.html"));
 });
 
-app.listen(PORT, () => {
+/* app.listen(PORT, () => {
   console.log(`Servidor rodando na porta ${PORT}`);
-});
+}); */
+
+module.exports = app;
