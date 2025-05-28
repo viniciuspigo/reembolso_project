@@ -11,6 +11,7 @@ function showMessage(text, color) {
 
 async function login(ev) {
   ev.preventDefault();
+  const BASE_URL = window.location.origin;
 
   const email = document.querySelector("#input-email").value.trim();
   const password = document.querySelector("#input-password").value.trim();
@@ -21,7 +22,7 @@ async function login(ev) {
   }
 
   try {
-    const response = await fetch("http://localhost:3000/usuarios/login", {
+    const response = await fetch(`${BASE_URL}/usuarios/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -57,6 +58,7 @@ async function login(ev) {
 // Função para enviar o e-mail do password recovery
 async function recoveryPassword(ev) {
   ev.preventDefault();
+  const BASE_URL = window.location.origin;
 
   const { value: email } = await Swal.fire({
     width: "40em",
@@ -69,7 +71,7 @@ async function recoveryPassword(ev) {
 
   try {
     const response = await fetch(
-      "http://localhost:3000/password/password-recovery",
+      `${BASE_URL}/password/password-recovery`,
       {
         method: "POST",
         headers: {

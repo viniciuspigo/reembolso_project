@@ -17,6 +17,7 @@ function validatePassword(password) {
 
 // Função para validar a senha passada e dar update no db do supabase
 async function updatePassword(ev) {
+  const BASE_URL = window.location.origin;
   ev.preventDefault();
 
   const newPassword = document.querySelector("#newPassword").value.trim();
@@ -27,7 +28,7 @@ async function updatePassword(ev) {
   if (!token) {
     showMessage("Token inválido ou ausente.", "red");
     setTimeout(() => {
-      window.location.href = "http://localhost:3000/sign-in";
+      window.location.href = `${BASE_URL}/sign-in`;
     }, 1500);
     return;
   }
@@ -47,7 +48,7 @@ async function updatePassword(ev) {
 
   try {
     const response = await fetch(
-      "http://localhost:3000/password/reset-password",
+      `${BASE_URL}/password/reset-password`,
       {
         method: "POST",
         headers: {

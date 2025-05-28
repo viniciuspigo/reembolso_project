@@ -32,6 +32,7 @@ function validateEmail(email) {
 // Função pra criar o user e salvar no bd
 async function registerUser(ev) {
   ev.preventDefault();
+  const BASE_URL = window.location.origin;
 
   const nome_completo = document.querySelector("#input-fullname").value.trim();
   const email = document.querySelector("#input-email").value.trim();
@@ -71,7 +72,7 @@ async function registerUser(ev) {
   }
 
   try {
-    const response = await fetch("http://localhost:3000/usuarios/register-user", {
+    const response = await fetch(`${BASE_URL}/usuarios/register-user`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -101,9 +102,10 @@ async function registerUser(ev) {
 
 // Função pra criar o userAdmin e salvar no bd
 async function registerAdminUser() {
+  const BASE_URL = window.location.origin;
   try {
     const response = await fetch(
-      "http://localhost:3000/usuarios/create-admin",
+      `${BASE_URL}/usuarios/create-admin`,
       {
         method: "GET",
       }

@@ -11,6 +11,7 @@ const bcrypt = require("bcrypt");
 
 const passwordController = {
   async passwordRecovery(req, res) {
+    const BASE_URL = window.location.origin;
     const { email } = req.body;
 
     try {
@@ -24,7 +25,7 @@ const passwordController = {
         pgPool,
         existingUser.id
       );
-      const resetLink = `http://localhost:3000/reset-password?token=${token}`;
+      const resetLink = `${BASE_URL}/reset-password?token=${token}`;
 
       const formatedDate = new Date(data_expiracao).toLocaleString("pt-BR", {
         day: "2-digit",

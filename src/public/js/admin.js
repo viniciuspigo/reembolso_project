@@ -3,6 +3,7 @@ let reembolsosAtuais = [];
 // Função que recebe pega as infos da API de reembolso e popula no HTML
 async function loadReembolsos(page = 1, filterName = "") {
   const token = localStorage.getItem("token");
+  const BASE_URL = window.location.origin;
 
   try {
     if (!token) {
@@ -10,10 +11,10 @@ async function loadReembolsos(page = 1, filterName = "") {
     }
 
     const url = filterName
-      ? `http://localhost:3000/solicitacoes?pagina=${page}&nome=${encodeURIComponent(
+      ? `${BASE_URL}/solicitacoes?pagina=${page}&nome=${encodeURIComponent(
           filterName
         )}`
-      : `http://localhost:3000/solicitacoes?pagina=${page}`;
+      : `${BASE_URL}/solicitacoes?pagina=${page}`;
 
     const response = await fetch(url, {
       method: "GET",
@@ -103,6 +104,7 @@ async function loadReembolsos(page = 1, filterName = "") {
 
 // Função para deletar o reembolso especificado
 async function deleteReembolso() {
+  const BASE_URL = window.location.origin;
   const refundInformation = document.querySelector(".refund-item-information");
   const refundContent = document.querySelector(".refund-content");
   const refundPanel = document.querySelector(".refund-panel");
@@ -127,7 +129,7 @@ async function deleteReembolso() {
     if (result.isConfirmed) {
       try {
         const response = await fetch(
-          `http://localhost:3000/solicitacoes/${reembolsoId}`,
+          `${BASE_URL}/solicitacoes/${reembolsoId}`,
           {
             method: "DELETE",
             headers: {

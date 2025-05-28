@@ -89,6 +89,7 @@ function configFileInput() {
 // Função para enviar a Req no BD
 async function enviarSolicitacao(ev, usuarioLogado) {
   ev.preventDefault();
+  const BASE_URL = window.location.origin;
 
   const nomeSolicitacao = document
     .querySelector("#nomeSolicitacao")
@@ -119,20 +120,12 @@ async function enviarSolicitacao(ev, usuarioLogado) {
     formData.append("comprovante", comprovante)
   }
 
-  /* const solicitacao = {
-    email: usuarioLogado.email,
-    nome: nomeSolicitacao,
-    categoria: categoria,
-    valor: valorReembolso,
-    comprovante: comprovante,
-  }; */
-
   try {
     if (!token) {
       throw new Error("Token não encontrado. Faça login novamente.");
     }
 
-    const response = await fetch("http://localhost:3000/solicitacoes", {
+    const response = await fetch(`${BASE_URL}/solicitacoes`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${token}`,
