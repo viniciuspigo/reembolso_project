@@ -30,7 +30,7 @@ async function loadReembolsos(page = 1, filterName = "") {
       if (response.status === 401 || response.status === 403) {
         localStorage.removeItem("token");
         localStorage.removeItem("role");
-        window.location.href = "sign-in.html";
+        window.location.href = "/";
         return;
       } else {
         throw new Error(data.message || "Erro ao carregar dados");
@@ -145,7 +145,7 @@ async function deleteReembolso() {
           if (response.status === 401 || response.status === 403) {
             localStorage.removeItem("token");
             localStorage.removeItem("role");
-            window.location.href = "sign-in.html";
+            window.location.href = "/";
             return;
           } else {
             throw new Error(data.message || "Erro ao carregar dados");
@@ -211,7 +211,7 @@ function verifyUser() {
   const role = localStorage.getItem("role");
 
   if (!token || !role) {
-    window.location.href = "sign-in.html";
+    window.location.href = "/";
     return null;
   }
 
@@ -229,7 +229,7 @@ function configLogout() {
     localStorage.removeItem("token");
     localStorage.removeItem("role");
     setTimeout(() => {
-      window.location.href = "sign-in.html";
+      window.location.href = "/";
     }, 150);
   });
 }

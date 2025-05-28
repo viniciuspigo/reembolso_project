@@ -48,12 +48,12 @@ function verifyUser() {
   const role = localStorage.getItem("role");
 
   if (!token || !role) {
-    window.location.href = "sign-in.html";
+    window.location.href = "/";
     return null;
   }
 
   if (role !== "user") {
-    window.location.href = role === "admin" ? "admin.html" : "sign-in.html";
+    window.location.href = role === "admin" ? "admin.html" : "/";
     return null;
   }
 
@@ -66,7 +66,7 @@ function configLogout() {
     localStorage.removeItem("token");
     localStorage.removeItem("role");
     setTimeout(() => {
-      window.location.href = "sign-in.html";
+      window.location.href = "/";
     }, 150);
   });
 }
@@ -139,7 +139,7 @@ async function enviarSolicitacao(ev, usuarioLogado) {
       if (response.status === 401 || response.status === 403) {
         localStorage.removeItem("token");
         localStorage.removeItem("role");
-        window.location.href = "sign-in.html";
+        window.location.href = "/";
         return;
       }
       throw new Error(data.message || "Erro ao enviar solicitação.");

@@ -63,7 +63,7 @@ async function updatePassword(ev) {
     if (!response.ok) {
       showMessage(`Erro: ${data.message}`, "red");
       setTimeout(() => {
-        window.location.href = "sign-in.html";
+        window.location.href = "/";
       }, 1500);
       return;
     }
@@ -73,7 +73,7 @@ async function updatePassword(ev) {
       "green"
     );
     setTimeout(() => {
-      window.location.href = "sign-in.html";
+      window.location.href = "/";
     }, 1500);
   } catch (error) {
     showMessage(`Erro ao redefinir senha: ${error.message}`, "red");
@@ -89,7 +89,7 @@ document.addEventListener("DOMContentLoaded", () => {
   if (!token) {
     alert("Token inválido ou ausente.");
     setTimeout(() => {
-      window.location.href = "sign-in.html";
+      window.location.href = "/";
     }, 1500);
   }
 });

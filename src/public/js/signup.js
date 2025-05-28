@@ -92,7 +92,7 @@ async function registerUser(ev) {
 
     clearInputs();
     setTimeout(() => {
-      window.location.href = "sign-in.html";
+      window.location.href = "/";
     }, 1000);
   } catch (error) {
     showMessage("Erro ao cadastrar usuário: " + error.message, "red");
