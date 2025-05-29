@@ -12,16 +12,16 @@
   ],
   "routes": [
     {
-      "src": "/(solicitacoes|usuarios|password)/.*",
-      "dest": "src/backend/server.js"
+      "src": "/(solicitacoes|usuarios|password)(/.*)?",
+      "dest": "/src/backend/server.js"
     },
     {
       "src": "/reset-password",
-      "dest": "src/backend/server.js"
+      "dest": "/src/backend/server.js"
     },
     {
       "src": "/(.*)",
-      "dest": "src/public/$1"
+      "dest": "/src/public/$1"
     }
   ]
 }

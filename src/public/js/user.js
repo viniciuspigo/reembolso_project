@@ -134,7 +134,7 @@ async function enviarSolicitacao(ev, usuarioLogado) {
       body: formData,
     });
 
-    const data = await response.json();
+    console.log("Status da resposta:", response.status);
 
     if (!response.ok) {
       const text = await response.text();
@@ -145,7 +145,7 @@ async function enviarSolicitacao(ev, usuarioLogado) {
         window.location.href = "/";
         return;
       }
-      throw new Error(data.message || "Erro ao enviar solicitação.");
+      throw new Error(`Erro ${response.status}: ${text.substring(0, 200)}...`);
     }
 
     // Mostra a div de realizar uma nova solicitação
