@@ -90,7 +90,7 @@ function configFileInput() {
 async function enviarSolicitacao(ev, usuarioLogado) {
   ev.preventDefault();
   const BASE_URL = window.location.origin;
-  console.log("BASE_URL:", BASE_URL);
+  console.log("BASE_URL:", BASE_URL)
 
   const nomeSolicitacao = document
     .querySelector("#nomeSolicitacao")
@@ -101,7 +101,7 @@ async function enviarSolicitacao(ev, usuarioLogado) {
     document.querySelector("#valorReembolso").value
   );
   const comprovante = fileInput.files.length > 0 ? fileInput.files[0] : null;
-  console.log(comprovante);
+  console.log(comprovante)
   const token = localStorage.getItem("token");
 
   if (categoria === "selecione") {
@@ -112,13 +112,13 @@ async function enviarSolicitacao(ev, usuarioLogado) {
     select.style.borderColor = "";
   }
 
-  const formData = new FormData();
-  formData.append("email", usuarioLogado.email);
-  formData.append("nome", nomeSolicitacao);
-  formData.append("categoria", categoria);
-  formData.append("valor", valorReembolso);
+  const formData = new FormData()
+  formData.append("email", usuarioLogado.email)
+  formData.append("nome", nomeSolicitacao)
+  formData.append("categoria", categoria)
+  formData.append("valor", valorReembolso)
   if (comprovante) {
-    formData.append("comprovante", comprovante);
+    formData.append("comprovante", comprovante)
   }
 
   try {
@@ -134,18 +134,16 @@ async function enviarSolicitacao(ev, usuarioLogado) {
       body: formData,
     });
 
-    console.log("Status da resposta:", response.status);
+    const data = await response.json();
 
     if (!response.ok) {
-      const text = await response.text();
-      console.error("Resposta do servidor:", text);
       if (response.status === 401 || response.status === 403) {
         localStorage.removeItem("token");
         localStorage.removeItem("role");
         window.location.href = "/";
         return;
       }
-      throw new Error(`Erro ${response.status}: ${text.substring(0, 200)}...`);
+      throw new Error(data.message || "Erro ao enviar solicitação.");
     }
 
     // Mostra a div de realizar uma nova solicitação
@@ -153,7 +151,7 @@ async function enviarSolicitacao(ev, usuarioLogado) {
     confirmationSection.style.display = "block";
   } catch (error) {
     showMessage(error.message, "red");
-    console.error(error.message, error.stack);
+    console.error(error.message, error.stack)
   }
 }
 
@@ -169,10 +167,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const usuarioLogado = verifyUser();
   if (!usuarioLogado) return;
 
-  const emailFormatado = usuarioLogado.email.split("@")[0];
+  const emailFormatado = usuarioLogado.email.split("@")[0] 
   // Mostrar o nome do user no header
-  document.querySelector("#user-name").textContent =
-    emailFormatado ?? "Usuário";
+  document.querySelector("#user-name").textContent = emailFormatado ?? "Usuário";
 
   form.addEventListener("submit", (ev) => enviarSolicitacao(ev, usuarioLogado));
 

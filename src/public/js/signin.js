@@ -70,25 +70,28 @@ async function recoveryPassword(ev) {
   });
 
   try {
-    const response = await fetch(
-      `${BASE_URL}/password/password-recovery`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email }),
-      }
-    );
+    const response = await fetch(`${BASE_URL}/password/password-recovery`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email }),
+    });
 
     const data = await response.json();
 
     if (!response.ok) {
       showMessage("Erro ao recuperar senha:" + data.message, "red");
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: `${data.message}`,
+      });
     }
+
     Swal.fire({
-      icon: "error",
-      title: "Oops...",
+      icon: "success",
+      title: "Recuperação de senha solicitada!",
       text: `${data.message}`,
     });
   } catch (error) {

@@ -11,8 +11,8 @@ const bcrypt = require("bcrypt");
 
 const passwordController = {
   async passwordRecovery(req, res) {
-    const BASE_URL = window.location.origin;
     const { email } = req.body;
+    const BASE_URL = process.env.BASE_URL || "http://localhost:3000"
 
     try {
       const existingUser = await findUserByEmail(pgPool, email);
@@ -73,11 +73,11 @@ const passwordController = {
       if (emailError) {
         return res
           .status(500)
-          .json({ message: "Erro ao enviar email", error: emailError });
+          .json({ message: "Erro ao enviar email!", error: emailError });
       }
 
       return res.status(200).json({
-        message: "Email de recuperação de senha enviado com sucesso",
+        message: "Email de recuperação de senha enviado com sucesso!",
         data,
       });
     } catch (error) {
