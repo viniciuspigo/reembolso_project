@@ -87,6 +87,7 @@ async function recoveryPassword(ev) {
         title: "Oops...",
         text: `${data.message}`,
       });
+      return
     }
 
     Swal.fire({

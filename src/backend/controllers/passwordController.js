@@ -36,7 +36,7 @@ const passwordController = {
       });
 
       const { data, error: emailError } = await resend.emails.send({
-        from: "Reembolso Project <onboarding@resend.dev>",
+        from: "Reembolso Project <contato@envios.pirasdev.com>",
         to: [email],
         subject: "Redefinição de senha - Reembolso Project",
         html: `
@@ -71,12 +71,9 @@ const passwordController = {
       });
 
       if (emailError) {
-        return res
-          .status(500)
-          .json({ message: "Erro ao enviar email!", error: emailError });
-      }
-
-      return res.status(200).json({
+        console.log(emailError.message, emailError)
+        return res.status(500).json({ message: `Erro ao enviar e-mail!`});
+      }      return res.status(200).json({
         message: "Email de recuperação de senha enviado com sucesso!",
         data,
       });

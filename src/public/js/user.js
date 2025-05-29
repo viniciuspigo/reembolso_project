@@ -90,7 +90,6 @@ function configFileInput() {
 async function enviarSolicitacao(ev, usuarioLogado) {
   ev.preventDefault();
   const BASE_URL = window.location.origin;
-  console.log("BASE_URL:", BASE_URL)
 
   const nomeSolicitacao = document
     .querySelector("#nomeSolicitacao")
@@ -101,7 +100,6 @@ async function enviarSolicitacao(ev, usuarioLogado) {
     document.querySelector("#valorReembolso").value
   );
   const comprovante = fileInput.files.length > 0 ? fileInput.files[0] : null;
-  console.log(comprovante)
   const token = localStorage.getItem("token");
 
   if (categoria === "selecione") {
@@ -146,7 +144,6 @@ async function enviarSolicitacao(ev, usuarioLogado) {
       throw new Error(data.message || "Erro ao enviar solicitação.");
     }
 
-    // Mostra a div de realizar uma nova solicitação
     form.style.display = "none";
     confirmationSection.style.display = "block";
   } catch (error) {
