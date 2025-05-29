@@ -90,6 +90,7 @@ function configFileInput() {
 async function enviarSolicitacao(ev, usuarioLogado) {
   ev.preventDefault();
   const BASE_URL = window.location.origin;
+  console.log("BASE_URL:", BASE_URL)
 
   const nomeSolicitacao = document
     .querySelector("#nomeSolicitacao")
