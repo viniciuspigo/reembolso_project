@@ -7,7 +7,6 @@ O projeto está disponível em: [https://pirasdev.com](https://pirasdev.com)
 Observação: Apenas usuários cadastrados podem acessar. O painel administrativo é restrito e o acesso ao login de admin ainda está sob consideração.
 
 ## ✨ Funcionalidades
-
 ### 👤 Área do Usuário
 * Formulário de Login e Registro
 * Opção "Esqueci minha senha": com envio de e-mail para recuperação.
@@ -27,7 +26,6 @@ Observação: Apenas usuários cadastrados podem acessar. O painel administrativ
 * Opção de deletar qualquer solicitação.
   
 ## 🧰 Tecnologias Utilizadas
-
 ### 🚀 Backend (Node.js + Express)
 * Metodologia: Arquitetura MVC (Model - View - Controller)
 * Banco de Dados: Supabase
