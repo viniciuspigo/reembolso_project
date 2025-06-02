@@ -17,5 +17,7 @@ const upload = multer({
 router.post('/', authenticateToken, upload.single("comprovante"), solicitacaoController.createSolicitacao);
 router.get('/', authenticateToken, solicitacaoController.getAllSolicitacoes);
 router.delete('/:id', authenticateToken, solicitacaoController.deleteSolicitacao)
+router.put("/:id/aprovar", authenticateToken, solicitacaoController.aproveSolicitacao)
+router.put("/:id/rejeitar", authenticateToken, solicitacaoController.rejectSolicitacao)
 
 module.exports = router;

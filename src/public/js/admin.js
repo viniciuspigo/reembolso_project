@@ -105,7 +105,7 @@ async function loadReembolsos(page = 1, filterName = "") {
         reembolsoStatus.classList.add("approved");
       } else if (reembolso.status === "rejeitado") {
         const reembolsoStatus = orderItem.querySelector(".reembolso-status");
-        reembolsoStatus.classList.add("rejected")
+        reembolsoStatus.classList.add("rejected");
       }
 
       refundOrder.appendChild(orderItem);
@@ -200,6 +200,140 @@ async function deleteReembolso() {
       }
     }
   });
+}
+
+// Função para aprovar o reembolso
+async function aproveReembolso() {
+  const BASE_URL = window.location.origin;
+  const refundInformation = document.querySelector(".refund-item-information");
+  const reembolsoId = refundInformation.dataset.reembolsoId;
+  const token = localStorage.getItem("token");
+
+  if (!reembolsoId) {
+    console.error("ID do reembolso não encontrado!");
+    return;
+  }
+
+  Swal.fire({
+    title: "Tem certeza?",
+    text: `Você deseja aprovar o reembolso ${reembolsoId}?`,
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#3085d6",
+    cancelButtonColor: "#d33",
+    confirmButtonText: "Aprovar!",
+    cancelButtonText: "Cancelar",
+  }).then(async (result) => {
+    if (result.isConfirmed) {
+      try {
+        const response = await fetch(
+          `${BASE_URL}/solicitacoes/${reembolsoId}/aprovar`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          if (response.status === 401 || response.status === 403) {
+            localStorage.removeItem("token");
+            localStorage.removeItem("role");
+            window.location.href = "/";
+            return;
+          } else {
+            throw new Error(data.message || "Erro ao carregar dados");
+          }
+        }
+
+        await Swal.fire(
+          "Aprovado!",
+          "O reembolso foi aprovado com sucesso.",
+          "success"
+        );
+      } catch (error) {
+        console.error("Erro ao aprovar reembolso:", error.message);
+        Swal.fire(
+          "Erro!",
+          `Houve um problema ao tentar aprovar o reembolso. ${error.message}`,
+          "error"
+        );
+      }
+    }
+  });
+
+  loadReembolsos(1);
+}
+
+// Função para rejeitar o reembolso
+async function rejectReembolso() {
+  const BASE_URL = window.location.origin;
+  const refundInformation = document.querySelector(".refund-item-information");
+  const reembolsoId = refundInformation.dataset.reembolsoId;
+  const token = localStorage.getItem("token");
+
+  if (!reembolsoId) {
+    console.error("ID do reembolso não encontrado!");
+    return;
+  }
+
+  Swal.fire({
+    title: "Tem certeza?",
+    text: `Você deseja rejeitar o reembolso ${reembolsoId}?`,
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#3085d6",
+    cancelButtonColor: "#d33",
+    confirmButtonText: "Rejeitar!",
+    cancelButtonText: "Cancelar",
+  }).then(async (result) => {
+    if (result.isConfirmed) {
+      try {
+        const response = await fetch(
+          `${BASE_URL}/solicitacoes/${reembolsoId}/rejeitar`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          if (response.status === 401 || response.status === 403) {
+            localStorage.removeItem("token");
+            localStorage.removeItem("role");
+            window.location.href = "/";
+            return;
+          } else {
+            throw new Error(data.message || "Erro ao carregar dados");
+          }
+        }
+
+        await Swal.fire(
+          "Aprovado!",
+          "O reembolso foi rejeitado com sucesso.",
+          "success"
+        );
+      } catch (error) {
+        console.error("Erro ao rejeitar reembolso:", error.message);
+        Swal.fire(
+          "Erro!",
+          `Houve um problema ao tentar rejeitar o reembolso. ${error.message}`,
+          "error"
+        );
+      }
+    }
+  });
+
+  loadReembolsos(1);
 }
 
 // Função que atualiza no html a paginação (Numero de paginas)
@@ -308,6 +442,14 @@ function configItensDetails() {
   document
     .querySelector("#deleteBtn")
     .addEventListener("click", deleteReembolso);
+
+  document
+    .querySelector("#aproveBtn")
+    .addEventListener("click", aproveReembolso);
+
+  document
+    .querySelector("#rejectBtn")
+    .addEventListener("click", rejectReembolso);
 }
 
 // Quando a pagina é carregada, ativa tudo o que estiver dentro da função

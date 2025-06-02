@@ -164,7 +164,7 @@ header {
 
                 &.approved {
                   color: var(--status-aprovado);
-                  background-color: rgba(44, 177, 120, 0.15)
+                  background-color: rgba(44, 177, 120, 0.15);
                 }
 
                 &.pending {
@@ -344,35 +344,78 @@ header {
       & .btns {
         max-width: 100%;
         display: flex;
+        flex-direction: column;
         justify-content: center;
         gap: 25px;
 
-        & .btn-reembolso {
+        & .first-btns {
+          display: flex;
+          flex-direction: row;
+          gap: 25px;
           width: 100%;
-          color: var(--color-white);
-          font-size: 14px;
-          font-weight: 700;
-          border: none;
-          border-radius: 8px;
-          padding: 15px 20px;
-          cursor: pointer;
-          transition: 0.3s;
+
+          & .btn-reembolso {
+            width: 100%;
+            color: var(--color-white);
+            font-size: 14px;
+            font-weight: 700;
+            border: none;
+            border-radius: 8px;
+            padding: 15px 20px;
+            cursor: pointer;
+            transition: 0.3s;
+          }
+
+          & #voltarBtn {
+            background-color: var(--color-green-100);
+          }
+
+          & #voltarBtn:hover {
+            background-color: var(--color-green-200);
+          }
+
+          & #deleteBtn {
+            background-color: var(--color-red-100);
+          }
+
+          & #deleteBtn:hover {
+            background-color: var(--color-red-200);
+          }
         }
 
-        & #voltarBtn {
-          background-color: var(--color-green-100);
-        }
+        & .second-btns {
+          display: flex;
+          flex-direction: row;
+          gap: 25px;
+          width: 100%;
 
-        & #voltarBtn:hover {
-          background-color: var(--color-green-200);
-        }
+          & .btn-reembolso {
+            width: 100%;
+            color: var(--color-white);
+            font-size: 14px;
+            font-weight: 700;
+            border: none;
+            border-radius: 8px;
+            padding: 15px 20px;
+            cursor: pointer;
+            transition: 0.3s;
+          }
 
-        & #deleteBtn {
-          background-color: var(--color-red-100);
-        }
+          & #aproveBtn {
+            background-color: var(--color-green-100);
+          }
 
-        & #deleteBtn:hover {
-          background-color: var(--color-red-200);
+          & #aproveBtn:hover {
+            background-color: var(--color-green-200);
+          }
+
+          & #rejectBtn {
+            background-color: var(--color-red-100);
+          }
+
+          & #rejectBtn:hover {
+            background-color: var(--color-red-200);
+          }
         }
       }
     }

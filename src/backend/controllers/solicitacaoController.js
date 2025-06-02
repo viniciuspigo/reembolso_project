@@ -3,6 +3,8 @@ const {
   createSolicitacaoToDB,
   deleteSolicitacaoFromDB,
   getSolicitacaoFromDB,
+  aproveSolicitacaoToDB,
+  rejectSolicitacaoToDB,
 } = require("../models/solicitacao");
 
 const solicitacaoController = {
@@ -208,12 +210,10 @@ const solicitacaoController = {
           .remove([fileName]);
 
         if (error) {
-          return res
-            .status(500)
-            .json({
-              message: "Erro ao excluir Documento do Supabase Storage",
-              error: error.message,
-            });
+          return res.status(500).json({
+            message: "Erro ao excluir Documento do Supabase Storage",
+            error: error.message,
+          });
         } else {
           console.log(
             "Documento excluído com sucesso do Supabase Storage",
@@ -235,6 +235,92 @@ const solicitacaoController = {
         return res.status(404).json({ message: error.message });
       }
       res.status(500).json({ message: "Erro ao excluir solicitação." });
+    }
+  },
+
+  async aproveSolicitacao(req, res) {
+    const id = parseInt(req.params.id, 10);
+
+    if (!id || isNaN(id) || id <= 0) {
+      return res.status(400).json({ message: "ID da solicitação é inválido!" });
+    }
+
+    if (req.user.role !== "admin") {
+      return res.status(403).json({
+        message: "Apenas administradores podem aprovar solicitações!",
+      });
+    }
+
+    try {
+      const reembolso = await getSolicitacaoFromDB(pgPool, {
+        id: id,
+      });
+
+      if (!reembolso) {
+        return res
+          .status(404)
+          .json({ message: "Nenhuma solicitação encontrada com esse ID." });
+      }
+
+      if (reembolso.status === "aprovado") {
+        return res
+          .status(400)
+          .json({ message: "Solicitação já foi aprovada." });
+      }
+
+      await aproveSolicitacaoToDB(pgPool, {
+        id: id,
+      });
+
+      return res
+        .status(200)
+        .json({ message: "Solicitação aprovada com sucesso!" });
+    } catch (error) {
+      console.error("Erro ao aprovar solicitação", error.message)
+      return res.status(500).json({ message: "Erro ao aprovar solicitação." });
+    }
+  },
+
+  async rejectSolicitacao(req, res) {
+    const id = parseInt(req.params.id, 10);
+
+    if (!id || isNaN(id) || id <= 0) {
+      return res.status(400).json({ message: "ID da solicitação é inválido!" });
+    }
+
+    if (req.user.role !== "admin") {
+      return res.status(403).json({
+        message: "Apenas administradores podem rejeitar solicitações!",
+      });
+    }
+
+    try {
+      const reembolso = await getSolicitacaoFromDB(pgPool, {
+        id: id,
+      });
+
+      if (!reembolso) {
+        return res
+          .status(404)
+          .json({ message: "Nenhuma solicitação encontrada com esse ID." });
+      }
+
+      if (reembolso.status === "rejeitado") {
+        return res
+          .status(400)
+          .json({ message: "Solicitação já foi rejeitada." });
+      }
+
+      await rejectSolicitacaoToDB(pgPool, {
+        id: id,
+      });
+
+      return res
+        .status(200)
+        .json({ message: "Solicitação rejeitada com sucesso!" });
+    } catch (error) {
+      console.error("Erro ao rejeitar solicitação", error.message)
+      return res.status(500).json({ message: "Erro ao rejeitar solicitação." });
     }
   },
 };
