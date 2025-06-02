@@ -21,7 +21,11 @@ body {
   --color-white: #ffffff;
   --color-green-100: #1f8459;
   --color-green-200: #2cb178;
-  --color-red-100: #F14646;
-  --color-red-200: #FF6B6B;
+  --color-red-100: #f14646;
+  --color-red-200: #ff6b6b;
   --color-black: #000000;
+
+  --status-aprovado: var(--color-green-100);
+  --status-pendente: #f59e0b;
+  --status-rejeitado: var(--color-red-100);
 }

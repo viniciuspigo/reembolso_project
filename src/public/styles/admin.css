@@ -150,18 +150,50 @@ header {
             & .right-content {
               display: flex;
               flex-direction: row;
+              gap: 35px;
+              align-items: center;
 
-              & span {
-                color: var(--color-gray-200);
-                font-size: 12px;
-                font-weight: 400;
-                margin-right: 5px;
+              & .reembolso-status {
+                font-size: 14px;
+                padding: 4px 10px;
+                border-radius: 20px;
+                font-weight: 600;
+                text-align: center;
+                background-color: rgba(0, 0, 0, 0.05);
+                color: var(--color-gray-100);
+
+                &.approved {
+                  color: var(--status-aprovado);
+                  background-color: rgba(44, 177, 120, 0.15)
+                }
+
+                &.pending {
+                  color: var(--status-pendente);
+                  background-color: rgba(245, 158, 11, 0.15);
+                }
+
+                &.rejected {
+                  color: var(--status-rejeitado);
+                  background-color: rgba(241, 70, 70, 0.15);
+                }
               }
 
-              & p {
-                color: var(--color-gray-100);
-                font-size: 14px;
-                font-weight: 600;
+              & .reembolso-value {
+                display: flex;
+                flex-direction: row;
+
+                & span {
+                  color: var(--color-gray-200);
+                  font-size: 12px;
+                  font-weight: 400;
+                  margin-right: 5px;
+                }
+
+                & p {
+                  color: var(--color-gray-100);
+                  font-size: 14px;
+                  font-weight: 600;
+                }
               }
             }
           }

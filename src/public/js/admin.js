@@ -87,10 +87,26 @@ async function loadReembolsos(page = 1, filterName = "") {
           </div>
         </div>
         <div class="right-content">
+          <div class="reembolso-status">
+            <p>${reembolso.status}</p>
+          </div>
+          <div class="reembolso-value">
           <span>R$</span>
           <p>${formatedValue}</p>
+          </div>
         </div>
       `;
+
+      if (reembolso.status === "pendente") {
+        const reembolsoStatus = orderItem.querySelector(".reembolso-status");
+        reembolsoStatus.classList.add("pending");
+      } else if (reembolso.status === "aprovado") {
+        const reembolsoStatus = orderItem.querySelector(".reembolso-status");
+        reembolsoStatus.classList.add("approved");
+      } else if (reembolso.status === "rejeitado") {
+        const reembolsoStatus = orderItem.querySelector(".reembolso-status");
+        reembolsoStatus.classList.add("rejected")
+      }
 
       refundOrder.appendChild(orderItem);
     });

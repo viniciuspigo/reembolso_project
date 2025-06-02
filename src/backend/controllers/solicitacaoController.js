@@ -42,7 +42,7 @@ const solicitacaoController = {
           });
 
         if (error) {
-          console.error("Erro ao enviar comprovante:", error);
+          console.error("Erro ao enviar comprovante:", error.message);
           return res.status(500).json({
             message: "Erro ao enviar comprovante.",
             details: error.message,

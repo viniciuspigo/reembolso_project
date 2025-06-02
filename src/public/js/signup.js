@@ -45,7 +45,7 @@ async function registerUser(ev) {
     nome_completo === "" ||
     email === "" ||
     senha === "" ||
-    senhaConfirmation === ""
+    senhaConfirmation === "" 
   ) {
     showMessage("Por favor, preencha todos os campos.", "red");
     return;
