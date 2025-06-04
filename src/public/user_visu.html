@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./styles/user_visu_main.css" />
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="./assets/images/icons/apple-touch-icon.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="./assets/images/icons/favicon-32x32.png"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.css"
+    />
+    <title>ADM - Refund Manager</title>
+  </head>
+  <body>
+    <header>
+      <div class="header-content">
+        <div class="logo">
+          <img src="./assets/images/logo_user.svg" alt="Imagem da logo" />
+        </div>
+        <div class="welcome">
+          <a href="./user.html" class="view-refunds-link"
+            >Solicitar Reembolso</a
+          >
+          <p>Olá, <span id="user-name">Usuário</span></p>
+          <button class="logout-btn">
+            <img
+              src="./assets/images/logout.svg"
+              alt="logout_icon"
+              id="logout"
+            />
+          </button>
+        </div>
+      </div>
+    </header>
+    <main>
+      <div class="container">
+        <div class="refund-panel">
+          <div class="refund-content">
+            <div class="refund-title">
+              <h1>Solicitações</h1>
+            </div>
+            <div class="refund-filter">
+              <input type="text" placeholder="Pesquisar pelo nome" />
+              <button>
+                <img src="./assets/images/filtro.svg" alt="pesquisar imagem" />
+              </button>
+            </div>
+            <hr />
+            <div class="refund-list">
+              <div class="refund-order">
+                <div class="order-item" id="order-1">
+                  <div class="left-content">
+                    <img
+                      src="./assets/images/order_img/alimentacao.svg"
+                      alt="imagem de order"
+                    />
+                    <div class="text-content">
+                      <h2>Rodrigo</h2>
+                      <p>Alimentação</p>
+                    </div>
+                  </div>
+                  <div class="right-content">
+                    <div class="reembolso-status aproved">Pendente</div>
+                    <div class="reembolso-value">
+                      <span>R$</span>
+                      <p>34,78</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="pagination-controls">
+              <button class="prev-btn">
+                <img src="./assets/images/prev.svg" alt="voltar_pag" />
+              </button>
+              <span class="page-indicator">1/1</span>
+              <button class="next-btn">
+                <img src="./assets/images/next.svg" alt="proxima_pag" />
+              </button>
+            </div>
+          </div>
+          <div class="refund-item-information">
+            <div class="refund-title">
+              <h2>Solicitação de reembolso</h2>
+              <p>Dados da despesa para solicitar reembolso.</p>
+            </div>
+            <div class="refund-main-information">
+              <div class="labelInput nomeSolicitacao">
+                <label for="nomeSolicitacao">NOME DA SOLICITAÇÃO</label>
+                <input
+                  type="text"
+                  name="nomeSolicitacao"
+                  id="nomeSolicitacao"
+                  readonly
+                />
+              </div>
+              <div class="labelInput categoriaValor">
+                <div class="categoria">
+                  <label for="categoria">CATEGORIA</label>
+                  <input name="categoria" id="categoriaSelect" readonly />
+                </div>
+                <div class="valor">
+                  <label for="valor">VALOR</label>
+                  <input
+                    type="number"
+                    id="valorReembolso"
+                    placeholder="0,00"
+                    readonly
+                  />
+                </div>
+              </div>
+              <div class="open-comprovante">
+                <button class="comprovante-btn">
+                  <span class="icon" id="open-document">
+                    <img
+                      src="./assets/images/comprovante.svg"
+                      alt="Imagem do comprovante"
+                    /> </span
+                  >Abrir comprovante
+                </button>
+              </div>
+            </div>
+            <div class="btns">
+              <div class="first-btns">
+                <button id="voltarBtn" class="btn-reembolso">Voltar</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js"></script>
+    <script src="./js/user_visu.js"></script>
+  </body>
+</html>

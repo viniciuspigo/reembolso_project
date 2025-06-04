@@ -4,8 +4,17 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="./styles/user_main.css" />
-    <link rel="apple-touch-icon" sizes="180x180" href="./assets/images/icons/apple-touch-icon.png" />
-    <link rel="icon" type="image/png" sizes="32x32" href="./assets/images/icons/favicon-32x32.png" />
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="./assets/images/icons/apple-touch-icon.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="./assets/images/icons/favicon-32x32.png"
+    />
     <script src="./js/user.js" defer></script>
     <title>User - Refund List</title>
   </head>
@@ -16,6 +25,9 @@
           <img src="./assets/images/logo_user.svg" alt="Imagem da logo" />
         </div>
         <div class="welcome">
+          <a href="./user_visu.html" class="view-refunds-link"
+            >Visualizar Reembolsos</a
+          >
           <p>Olá, <span id="user-name">Usuário</span></p>
           <button class="logout-btn">
             <img
@@ -34,7 +46,7 @@
             <div class="content">
               <h1>Solicitação de reembolso</h1>
               <p>Dados da despesa para solicitar reembolso.</p>
-            </div> 
+            </div>
             <div id="user-form-inputs">
               <div class="labelInput nomeSolicitacao">
                 <label for="nomeSolicitacao">NOME DA SOLICITAÇÃO</label>
@@ -49,7 +61,9 @@
                 <div class="categoria">
                   <label for="categoria">CATEGORIA</label>
                   <select name="categoria" id="categoriaSelect">
-                    <option value="selecione" disabled selected>Selecione</option>
+                    <option value="selecione" disabled selected>
+                      Selecione
+                    </option>
                     <option value="Alimentação">Alimentação</option>
                     <option value="Hospedagem">Hospedagem</option>
                     <option value="Transporte">Transporte</option>
@@ -74,7 +88,10 @@
                 <div class="custom-file-input">
                   <span class="file-name">Nome do arquivo.pdf</span>
                   <button type="button" class="upload-button">
-                    <img src="./assets/images/upload.svg" alt="Imagem de upload" />
+                    <img
+                      src="./assets/images/upload.svg"
+                      alt="Imagem de upload"
+                    />
                   </button>
                   <input
                     type="file"
