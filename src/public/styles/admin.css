@@ -374,12 +374,12 @@ header {
             background-color: var(--color-green-200);
           }
 
-          & #deleteBtn {
-            background-color: var(--color-red-100);
+          & #aproveBtn {
+            background-color: var(--color-green-100);
           }
 
-          & #deleteBtn:hover {
-            background-color: var(--color-red-200);
+          & #aproveBtn:hover {
+            background-color: var(--color-green-200);
           }
         }
 
@@ -401,12 +401,12 @@ header {
             transition: 0.3s;
           }
 
-          & #aproveBtn {
-            background-color: var(--color-green-100);
+          & #deleteBtn {
+            background-color: var(--color-red-100);
           }
 
-          & #aproveBtn:hover {
-            background-color: var(--color-green-200);
+          & #deleteBtn:hover {
+            background-color: var(--color-red-200);
           }
 
           & #rejectBtn {

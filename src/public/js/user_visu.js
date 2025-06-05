@@ -2,19 +2,16 @@ let reembolsosAtuais = [];
 
 // Função que recebe pega as infos da API de reembolso e popula no HTML
 async function loadReembolsos(page = 1, filterName = "") {
-  const token = localStorage.getItem("token");
+  const usuarioLogado = verifyUser();
+  if (!usuarioLogado) return;
+
+  const { token } = usuarioLogado;
   const BASE_URL = window.location.origin;
 
   try {
-    if (!token) {
-      throw new Error("Token não encontrado. Faça login novamente.");
-    }
-
     const url = filterName
-      ? `${BASE_URL}/solicitacoes?pagina=${page}&nome=${encodeURIComponent(
-          filterName
-        )}`
-      : `${BASE_URL}/solicitacoes?pagina=${page}`;
+      ? `${BASE_URL}/solicitacoes/email?pagina=${page}&nome=${encodeURIComponent(filterName)}`
+      : `${BASE_URL}/solicitacoes/email?pagina=${page}`;
 
     const response = await fetch(url, {
       method: "GET",
@@ -42,7 +39,7 @@ async function loadReembolsos(page = 1, filterName = "") {
     const refundOrder = document.querySelector(".refund-order");
     refundOrder.innerHTML = "";
 
-    // Preenche os itens disponíveis (até o tamanho do array retornado)
+    // Preenche os itens disponíveis
     reembolsosAtuais.forEach((reembolso, index) => {
       const orderItem = document.createElement("div");
       orderItem.className = "order-item";
@@ -91,8 +88,8 @@ async function loadReembolsos(page = 1, filterName = "") {
             <p>${reembolso.status}</p>
           </div>
           <div class="reembolso-value">
-          <span>R$</span>
-          <p>${formatedValue}</p>
+            <span>R$</span>
+            <p>${formatedValue}</p>
           </div>
         </div>
       `;
@@ -114,226 +111,8 @@ async function loadReembolsos(page = 1, filterName = "") {
     updatePages(data.paginaAtual, data.totalPaginas);
     configItensDetails();
   } catch (error) {
-    console.error("Erro ao carregar reembolsos:", error.message);
+    console.error("Erro ao carregar reembolsos:", error.message, error.stack);
   }
-}
-
-// Função para deletar o reembolso especificado
-async function deleteReembolso() {
-  const BASE_URL = window.location.origin;
-  const refundInformation = document.querySelector(".refund-item-information");
-  const refundContent = document.querySelector(".refund-content");
-  const refundPanel = document.querySelector(".refund-panel");
-  const reembolsoId = refundInformation.dataset.reembolsoId;
-  const token = localStorage.getItem("token");
-
-  if (!reembolsoId) {
-    console.error("ID do reembolso não encontrado!");
-    return;
-  }
-
-  Swal.fire({
-    title: "Tem certeza?",
-    text: `Você deseja deletar o reembolso ${reembolsoId}?`,
-    icon: "warning",
-    showCancelButton: true,
-    confirmButtonColor: "#d33",
-    cancelButtonColor: "#3085d6",
-    confirmButtonText: "Deletar!",
-    cancelButtonText: "Cancelar",
-  }).then(async (result) => {
-    if (result.isConfirmed) {
-      try {
-        const response = await fetch(
-          `${BASE_URL}/solicitacoes/${reembolsoId}`,
-          {
-            method: "DELETE",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-
-        const data = await response.json();
-
-        if (!response.ok) {
-          if (response.status === 401 || response.status === 403) {
-            localStorage.removeItem("token");
-            localStorage.removeItem("role");
-            window.location.href = "/";
-            return;
-          } else {
-            throw new Error(data.message || "Erro ao carregar dados");
-          }
-        }
-
-        await Swal.fire(
-          "Excluído!",
-          "O reembolso foi deletado com sucesso.",
-          "success"
-        );
-
-        loadReembolsos(1);
-        refundInformation.style.display = "none";
-        refundContent.style.display = "flex";
-        refundPanel.style.width = "1082px";
-
-        // Configuração da Notificação pós exclussão de documentos.
-        const notyf = new Notyf({
-          duration: 3500,
-          ripple: true,
-          dismissible: true,
-          position: {
-            x: "right",
-            y: "top",
-          },
-        });
-        notyf.success(" Reembolso removido com sucesso.");
-      } catch (error) {
-        console.error("Erro ao deletar reembolso:", error.message);
-        Swal.fire(
-          "Erro!",
-          `Houve um problema ao tentar deletar o reembolso. ${error.message}`,
-          "error"
-        );
-      }
-    }
-  });
-}
-
-// Função para aprovar o reembolso
-async function aproveReembolso() {
-  const BASE_URL = window.location.origin;
-  const refundInformation = document.querySelector(".refund-item-information");
-  const reembolsoId = refundInformation.dataset.reembolsoId;
-  const token = localStorage.getItem("token");
-
-  if (!reembolsoId) {
-    console.error("ID do reembolso não encontrado!");
-    return;
-  }
-
-  Swal.fire({
-    title: "Tem certeza?",
-    text: `Você deseja aprovar o reembolso ${reembolsoId}?`,
-    icon: "warning",
-    showCancelButton: true,
-    confirmButtonColor: "#3085d6",
-    cancelButtonColor: "#d33",
-    confirmButtonText: "Aprovar!",
-    cancelButtonText: "Cancelar",
-  }).then(async (result) => {
-    if (result.isConfirmed) {
-      try {
-        const response = await fetch(
-          `${BASE_URL}/solicitacoes/${reembolsoId}/aprovar`,
-          {
-            method: "PUT",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-
-        const data = await response.json();
-
-        if (!response.ok) {
-          if (response.status === 401 || response.status === 403) {
-            localStorage.removeItem("token");
-            localStorage.removeItem("role");
-            window.location.href = "/";
-            return;
-          } else {
-            throw new Error(data.message || "Erro ao carregar dados");
-          }
-        }
-
-        await Swal.fire(
-          "Aprovado!",
-          "O reembolso foi aprovado com sucesso.",
-          "success"
-        );
-      } catch (error) {
-        console.error("Erro ao aprovar reembolso:", error.message);
-        Swal.fire(
-          "Erro!",
-          `Houve um problema ao tentar aprovar o reembolso. ${error.message}`,
-          "error"
-        );
-      }
-    }
-  });
-
-  loadReembolsos(1);
-}
-
-// Função para rejeitar o reembolso
-async function rejectReembolso() {
-  const BASE_URL = window.location.origin;
-  const refundInformation = document.querySelector(".refund-item-information");
-  const reembolsoId = refundInformation.dataset.reembolsoId;
-  const token = localStorage.getItem("token");
-
-  if (!reembolsoId) {
-    console.error("ID do reembolso não encontrado!");
-    return;
-  }
-
-  Swal.fire({
-    title: "Tem certeza?",
-    text: `Você deseja rejeitar o reembolso ${reembolsoId}?`,
-    icon: "warning",
-    showCancelButton: true,
-    confirmButtonColor: "#3085d6",
-    cancelButtonColor: "#d33",
-    confirmButtonText: "Rejeitar!",
-    cancelButtonText: "Cancelar",
-  }).then(async (result) => {
-    if (result.isConfirmed) {
-      try {
-        const response = await fetch(
-          `${BASE_URL}/solicitacoes/${reembolsoId}/rejeitar`,
-          {
-            method: "PUT",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-
-        const data = await response.json();
-
-        if (!response.ok) {
-          if (response.status === 401 || response.status === 403) {
-            localStorage.removeItem("token");
-            localStorage.removeItem("role");
-            window.location.href = "/";
-            return;
-          } else {
-            throw new Error(data.message || "Erro ao carregar dados");
-          }
-        }
-
-        await Swal.fire(
-          "Aprovado!",
-          "O reembolso foi rejeitado com sucesso.",
-          "success"
-        );
-      } catch (error) {
-        console.error("Erro ao rejeitar reembolso:", error.message);
-        Swal.fire(
-          "Erro!",
-          `Houve um problema ao tentar rejeitar o reembolso. ${error.message}`,
-          "error"
-        );
-      }
-    }
-  });
-
-  loadReembolsos(1);
 }
 
 // Função que atualiza no html a paginação (Numero de paginas)
@@ -347,12 +126,33 @@ function updatePages(page, totalPages) {
   paginaInfo.textContent = `${page}/${totalPages || 1}`;
 }
 
-// Função que filtra a pesquisa do Input pelo nome do user
+// Função que filtra a pesquisa do Input pelo nome
 function searchByName() {
   const nomeFiltro = document
     .querySelector(".refund-filter input")
     .value.trim();
   loadReembolsos(1, nomeFiltro);
+}
+
+
+// Função para decodificar o token JWT
+function decodeToken(token) {
+  try {
+    const base64Url = token.split(".")[1];
+    const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+    const jsonPayload = decodeURIComponent(
+      atob(base64)
+        .split("")
+        .map(function (c) {
+          return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
+        })
+        .join("")
+    );
+    return JSON.parse(jsonPayload);
+  } catch (error) {
+    console.error("Erro ao decodificar token:", error);
+    return null;
+  }
 }
 
 // Verificação do usuário pelo localStorage
@@ -365,7 +165,28 @@ function verifyUser() {
     return null;
   }
 
-  return { token, role };
+  if (role !== "user") {
+    window.location.href = role === "admin" ? "admin.html" : "/";
+    return null;
+  }
+
+  const decoded = decodeToken(token);
+  if (!decoded || !decoded.email) {
+    console.error("E-mail não encontrado no token.");
+    window.location.href = "/";
+    return null;
+  }
+
+  return { token, role, email: decoded.email };
+}
+
+// Função para preencher o nome do usuário no header
+async function setUserName() {
+  const usuarioLogado = verifyUser();
+  if (!usuarioLogado) return;
+
+  const userNameSpan = document.querySelector("#user-name");
+  userNameSpan.textContent = usuarioLogado.email.split("@")[0];
 }
 
 // Configuração do btn de logout
@@ -390,7 +211,6 @@ function configItensDetails() {
   const valorInput = document.querySelector("#valorReembolso");
   const comprovanteBtn = document.querySelector(".comprovante-btn");
 
-  // Adicionado o "onclick" ao invés do eventlistener para os events não ficarem tudo acumulado gerando erros
   comprovanteBtn.onclick = () => {
     if (
       comprovanteAtual === undefined ||
@@ -411,7 +231,6 @@ function configItensDetails() {
     item.addEventListener("click", () => {
       const index = parseInt(item.dataset.index, 10);
       const reembolso = reembolsosAtuais[index];
-      /* console.log(reembolsosAtuais[index].comprovante); */
       if (reembolso) {
         nomeSolicitacaoInput.value = reembolso.nome;
         categoriaInput.value = reembolso.categoria;
@@ -433,32 +252,17 @@ function configItensDetails() {
     refundContent.style.display = "flex";
     refundPanel.style.width = "1082px";
   });
-
-  document
-    .querySelector("#deleteBtn")
-    .addEventListener("click", deleteReembolso);
-
-  document
-    .querySelector("#aproveBtn")
-    .addEventListener("click", aproveReembolso);
-
-  document
-    .querySelector("#rejectBtn")
-    .addEventListener("click", rejectReembolso);
 }
 
 // Quando a pagina é carregada, ativa tudo o que estiver dentro da função
 document.addEventListener("DOMContentLoaded", () => {
-  // Carrega o usuário logado
   const usuarioLogado = verifyUser();
   if (!usuarioLogado) return;
 
+  setUserName();
   configLogout();
-
-  // carrega os reembolsos ao entrar na página (página 1 por padrão)
   loadReembolsos(1);
 
-  // Controles de pagina
   document.querySelector(".prev-btn").addEventListener("click", () => {
     const paginaAtual = parseInt(
       document.querySelector(".page-indicator").textContent.split("/")[0]
@@ -486,7 +290,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // Pesquisa pelo nome que o usuário digitou no input
   document
     .querySelector(".refund-filter input")
     .addEventListener("keypress", (ev) => {

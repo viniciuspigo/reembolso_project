@@ -276,7 +276,7 @@ const solicitacaoController = {
         .status(200)
         .json({ message: "Solicitação aprovada com sucesso!" });
     } catch (error) {
-      console.error("Erro ao aprovar solicitação", error.message)
+      console.error("Erro ao aprovar solicitação", error.message);
       return res.status(500).json({ message: "Erro ao aprovar solicitação." });
     }
   },
@@ -319,8 +319,74 @@ const solicitacaoController = {
         .status(200)
         .json({ message: "Solicitação rejeitada com sucesso!" });
     } catch (error) {
-      console.error("Erro ao rejeitar solicitação", error.message)
+      console.error("Erro ao rejeitar solicitação", error.message);
       return res.status(500).json({ message: "Erro ao rejeitar solicitação." });
+    }
+  },
+
+  async getSolicitacaoEmail(req, res) {
+    const pagina = parseInt(req.query.pagina) || 1;
+    const limite = 6;
+    const offset = (pagina - 1) * limite;
+    const email = req.user.email;
+    const nomeFiltro = req.query.nome ? `%${req.query.nome}%` : null;
+
+    if (pagina < 1) {
+      return res
+        .status(400)
+        .json({ message: "A página deve ser um número maior ou igual a 1." });
+    }
+
+    if (!email) {
+      return res
+        .status(400)
+        .json({ message: "E-mail do usuário não fornecido." });
+    }
+
+    try {
+      // Monta a query de contagem
+      let countQuery =
+        "SELECT COUNT(*) as total FROM solicitacao WHERE email = $1";
+      let countParams = [email];
+      if (nomeFiltro !== null) {
+        countQuery += " AND nome ILIKE $2";
+        countParams.push(nomeFiltro);
+      }
+
+      const { rows: countRows } = await pgPool.query(countQuery, countParams);
+      const totalRegistros = parseInt(countRows[0].total, 10);
+      const totalPaginas = Math.ceil(totalRegistros / limite);
+
+      // Monta a query de seleção
+      let selectQuery = "SELECT * FROM solicitacao WHERE email = $1";
+      let selectParams = [email];
+      if (nomeFiltro !== null) {
+        selectQuery += " AND nome ILIKE $2";
+        selectParams.push(nomeFiltro);
+        selectQuery += " ORDER BY id DESC LIMIT $3 OFFSET $4";
+        selectParams.push(limite, offset);
+      } else {
+        selectQuery += " ORDER BY id DESC LIMIT $2 OFFSET $3";
+        selectParams.push(limite, offset);
+      }
+
+      const { rows } = await pgPool.query(selectQuery, selectParams);
+
+      res.status(200).json({
+        paginaAtual: pagina,
+        totalPaginas,
+        totalRegistros,
+        registrosInfo: rows,
+      });
+    } catch (error) {
+      console.error(
+        "Erro ao listar solicitações do usuário:",
+        error.message,
+        error.stack
+      );
+      res
+        .status(500)
+        .json({ message: "Erro ao listar solicitações do usuário." });
     }
   },
 };

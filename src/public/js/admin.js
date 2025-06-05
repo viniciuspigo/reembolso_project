@@ -347,7 +347,7 @@ function updatePages(page, totalPages) {
   paginaInfo.textContent = `${page}/${totalPages || 1}`;
 }
 
-// Função que filtra a pesquisa do Input pelo nome do user
+// Função que filtra a pesquisa do Input pelo nome
 function searchByName() {
   const nomeFiltro = document
     .querySelector(".refund-filter input")
@@ -355,7 +355,7 @@ function searchByName() {
   loadReembolsos(1, nomeFiltro);
 }
 
-// Verificação do usuário pelo localStorage (POR ENQUANTO) | Vou deixar em um BD no futuro
+// Verificação do usuário pelo localStorage
 function verifyUser() {
   const token = localStorage.getItem("token");
   const role = localStorage.getItem("role");

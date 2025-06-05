@@ -19,5 +19,6 @@ router.get('/', authenticateToken, solicitacaoController.getAllSolicitacoes);
 router.delete('/:id', authenticateToken, solicitacaoController.deleteSolicitacao)
 router.put("/:id/aprovar", authenticateToken, solicitacaoController.aproveSolicitacao)
 router.put("/:id/rejeitar", authenticateToken, solicitacaoController.rejectSolicitacao)
+router.get("/email", authenticateToken, solicitacaoController.getSolicitacaoEmail);
 
 module.exports = router;

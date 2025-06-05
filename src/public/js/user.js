@@ -60,6 +60,7 @@ function verifyUser() {
   const decoded = decodeToken(token);
   return { token, role, email: decoded.email };
 }
+
 // Configuração do btn de logout
 function configLogout() {
   document.querySelector(".logout-btn").addEventListener("click", () => {
@@ -86,14 +87,20 @@ function configFileInput() {
   });
 }
 
+async function setUserName() {
+  const usuarioLogado = verifyUser();
+  if (!usuarioLogado) return;
+
+  const userNameSpan = document.querySelector("#user-name");
+  userNameSpan.textContent = usuarioLogado.email.split("@")[0];
+}
+
 // Função para enviar a Req no BD
 async function enviarSolicitacao(ev, usuarioLogado) {
   ev.preventDefault();
   const BASE_URL = window.location.origin;
 
-  const nomeSolicitacao = document
-    .querySelector("#nomeSolicitacao")
-    .value.trim();
+  const nomeSolicitacao = document.querySelector("#nomeSolicitacao").value.trim();
   const select = document.querySelector("#categoriaSelect");
   const categoria = select.value;
   const valorReembolso = parseFloat(
@@ -164,12 +171,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const usuarioLogado = verifyUser();
   if (!usuarioLogado) return;
 
-  const emailFormatado = usuarioLogado.email.split("@")[0] 
-  // Mostrar o nome do user no header
-  document.querySelector("#user-name").textContent = emailFormatado ?? "Usuário";
-
   form.addEventListener("submit", (ev) => enviarSolicitacao(ev, usuarioLogado));
 
+  setUserName()
   configLogout();
   configFileInput();
 });
