@@ -54,7 +54,8 @@ header {
   padding-top: 26px;
 
   & .refund-request {
-    width: 512px;
+    width: 100%;
+    max-width: 512px;
     background-color: var(--color-gray-500);
     padding: 40px;
     border-radius: 16px;
@@ -269,7 +270,29 @@ header {
   }
 }
 
-@media (max-width: 530px) {
+@media (max-width: 768px) {
+  .header-content {
+    padding: 32px 48px 0 48px;
+
+    .welcome {
+      .view-refunds-link {
+        font-size: 12px;
+        padding: 6px 10px;
+      }
+
+      p {
+        font-size: 13px;
+      }
+    }
+  }
+
+  .container .refund-request {
+    width: 90%;
+    max-width: 600px;
+  }
+}
+
+@media (max-width: 480px) {
   .header-content {
     flex-direction: row;
     justify-content: space-between;
@@ -348,9 +371,30 @@ header {
   }
 }
 
-@media (max-width: 375px) {
+@media (max-width: 320px) {
   .header-content {
     padding: 20px 12px 0 12px;
+
+    .welcome {
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: flex-end;
+
+      .view-refunds-link {
+        font-size: 11px;
+        padding: 6px 8px;
+        margin-right: 8px;
+      }
+
+      p {
+        font-size: 11px;
+      }
+
+      button img {
+        width: 18px;
+        height: 18px;
+      }
+    }
   }
 
   .refund-request {

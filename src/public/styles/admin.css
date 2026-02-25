@@ -45,6 +45,12 @@ header {
     padding: 40px;
     border-radius: 16px;
     background-color: var(--color-gray-500);
+    transition: max-width 0.3s ease;
+
+    /* Quando mostrando detalhes de reembolso, usar max-width menor */
+    &:has(.refund-item-information[style*="display: flex"]) {
+      max-width: min(512px, 90vw);
+    }
 
     & .refund-content {
       display: flex;
@@ -309,11 +315,22 @@ header {
           }
 
           & .categoria {
-            width: 262px;
+            flex: 1;
+            min-width: 0;
           }
 
           & .valor {
-            width: 164px;
+            flex: 0 0 164px;
+          }
+
+          @media (max-width: 480px) {
+            flex-direction: column;
+
+            & .categoria,
+            .valor {
+              width: 100%;
+              flex: 1;
+            }
           }
         }
 
@@ -422,9 +439,31 @@ header {
   }
 }
 
-@media (max-width: 560px) {
+@media (max-width: 768px) {
+  .header-content {
+    padding: 32px 48px 0 48px;
+
+    .welcome p {
+      font-size: 13px;
+    }
+  }
+
+  .container {
+    padding: 24px;
+
+    .refund-panel {
+      padding: 32px;
+    }
+  }
+}
+
+@media (max-width: 480px) {
   .header-content {
     padding: 24px 16px 0 16px;
+
+    .welcome p {
+      font-size: 12px;
+    }
   }
 
   .container {
@@ -497,20 +536,7 @@ header {
   }
 }
 
-@media (max-width: 451px) {
-  .container {
-    & .refund-panel {
-      padding: 32px;
-      & .refund-content {
-        & .refund-title h1 {
-          font-size: 16px;
-        }
-      }
-    }
-  }
-}
-
-@media (max-width: 376px) {
+@media (max-width: 320px) {
   .header-content {
     & .logo img {
       width: 88px;
@@ -518,8 +544,11 @@ header {
     }
 
     & .welcome {
+      flex-wrap: wrap;
+      gap: 4px;
+
       & p {
-        font-size: 12px;
+        font-size: 11px;
         font-weight: 500;
         text-align: center;
       }
@@ -535,11 +564,14 @@ header {
   }
 
   .container {
+    padding: 36px 18px;
     & .refund-panel {
-      padding: 24px;
+      padding: 16px;
       & .refund-content {
+        gap: 16px;
+
         & .refund-title h1 {
-          font-size: 14px;
+          font-size: 13px;
         }
 
         & .refund-filter {
@@ -588,46 +620,24 @@ header {
 
         & .pagination-controls {
           & button {
-            padding: 1px;
+            padding: 2px;
+            min-width: 44px;
+            min-height: 44px;
+
+            & img {
+              width: 18px;
+              height: 18px;
+            }
+          }
+
+          & span {
+            font-size: 11px;
           }
         }
       }
     }
   }
 }
-
-@media (max-width: 320px) {
-  .header-content {
-    & .logo img {
-      width: 88px;
-      height: auto;
-    }
-
-    & .welcome {
-      & p {
-        font-size: 12px;
-        font-weight: 500;
-        text-align: center;
-      }
-
-      & button {
-        display: flex;
-        background-color: transparent;
-        border: none;
-        margin-left: 10px;
-        cursor: pointer;
-      }
-    }
-  }
-
-  .container {
-    padding: 36px 18px;
-    & .refund-panel {
-      padding: 16px;
-      & .refund-content {
-        & .refund-title h1 {
-          font-size: 14px;
-        }
 
         & .refund-filter {
           & input {

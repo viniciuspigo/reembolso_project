@@ -239,7 +239,6 @@ function configItensDetails() {
 
         refundInformation.style.display = "flex";
         refundContent.style.display = "none";
-        refundPanel.style.width = "512px";
         comprovanteAtual = reembolso.comprovante_url;
       } else {
         console.error("Reembolso não encontrado para o índice:", index);
@@ -250,7 +249,6 @@ function configItensDetails() {
   document.querySelector("#voltarBtn").addEventListener("click", () => {
     refundInformation.style.display = "none";
     refundContent.style.display = "flex";
-    refundPanel.style.width = "1082px";
   });
 }
 

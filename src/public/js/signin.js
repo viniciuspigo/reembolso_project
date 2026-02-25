@@ -61,7 +61,6 @@ async function recoveryPassword(ev) {
   const BASE_URL = window.location.origin;
 
   const { value: email } = await Swal.fire({
-    width: "40em",
     title: "Recuperar senha",
     input: "email",
     inputLabel:

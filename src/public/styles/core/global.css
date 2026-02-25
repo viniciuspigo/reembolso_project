@@ -9,7 +9,8 @@
 body {
   background-color: var(--color-gray-400);
   font-family: "Work Sans", sans-serif;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 :root {
@@ -28,4 +29,28 @@ body {
   --status-aprovado: var(--color-green-100);
   --status-pendente: #f59e0b;
   --status-rejeitado: var(--color-red-100);
+}
+
+/* Melhorias de responsividade global */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Touch targets mínimos para mobile */
+@media (max-width: 768px) {
+  button,
+  a {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Prevenir zoom em inputs no iOS */
+  input,
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
 }
